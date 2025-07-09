@@ -134,4 +134,4 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
 // Fallback route untuk 404 custom
 Route::fallback(function () {
     return response()->view('errors.404', [], 404);
-});
+}); 

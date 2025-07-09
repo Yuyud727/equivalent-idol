@@ -374,7 +374,7 @@
         </div>
     </div>
 
-    <!-- Gallery/Dokumentasi Section -->
+    <!-- Simplified Gallery Section -->
     <section id="gallery" class="section-padding bg-gray-50 section">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Section Header -->
@@ -392,153 +392,137 @@
                 </div>
             </div>
 
-            <!-- Main Gallery Container -->
+            <!-- Simplified Gallery Container -->
             <div class="bg-white rounded-3xl p-6 md:p-8 shadow-xl loading">
                 
-                <!-- Main Image Carousel -->
-                <div class="relative mb-8" id="mainCarousel">
+                <!-- Main Image Display -->
+                <div class="relative mb-8" id="mainGallery">
                     <div class="aspect-w-16 aspect-h-9 md:aspect-h-6 rounded-2xl overflow-hidden bg-gray-200 relative">
                         
                         <!-- Main Image Container -->
                         <div class="gallery-main-container relative w-full h-full" style="height: 400px;">
-                            @forelse($galleries as $index => $gallery)
-                            <div class="gallery-slide absolute inset-0 opacity-0 transition-all duration-500 {{ $index === 0 ? 'opacity-100' : '' }}" 
-                                data-slide="{{ $index }}">
-                                <img src="{{ $gallery->image_url }}" 
-                                    alt="{{ $gallery->title }}" 
+                            <!-- Slide 1 -->
+                            <div class="gallery-slide active-slide absolute inset-0 transition-all duration-700 ease-in-out" 
+                                data-slide="0">
+                                <img src="{{ asset('storage/gallery/Dokumentasi_1.jpg') }}" 
+                                    alt="Gallery Image 1" 
                                     class="w-full h-full object-cover">
-                                
-                                <!-- Image Overlay Info -->
-                                <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6 text-white">
-                                    <h3 class="text-xl md:text-2xl font-bold mb-2">{{ $gallery->title }}</h3>
-                                    <p class="text-sm md:text-base text-gray-200 mb-2">{{ $gallery->description }}</p>
-                                    <div class="flex items-center text-xs md:text-sm text-gray-300">
-                                        <span class="bg-idol-pink px-2 py-1 rounded-full text-white mr-3">{{ $gallery->category_label }}</span>
-                                        @if($gallery->formatted_taken_date)
-                                        <span>{{ $gallery->formatted_taken_date }}</span>
-                                        @endif
-                                        @if($gallery->photographer)
-                                        <span class="ml-3">📸 {{ $gallery->photographer }}</span>
-                                        @endif
-                                    </div>
-                                </div>
                             </div>
-                            @empty
-                            <div class="flex items-center justify-center h-full bg-gray-100">
-                                <p class="text-gray-500 text-lg">No gallery images available</p>
+                            
+                            <!-- Slide 2 -->
+                            <div class="gallery-slide absolute inset-0 transition-all duration-700 ease-in-out translate-x-full" 
+                                data-slide="1">
+                                <img src="{{ asset('storage/gallery/Dokumentasi_2.jpg') }}" 
+                                    alt="Gallery Image 2" 
+                                    class="w-full h-full object-cover">
                             </div>
-                            @endforelse
+                            
+                            <!-- Slide 3 -->
+                            <div class="gallery-slide absolute inset-0 transition-all duration-700 ease-in-out translate-x-full" 
+                                data-slide="2">
+                                <img src="{{ asset('storage/gallery/Dokumentasi_3.jpg') }}" 
+                                    alt="Gallery Image 3" 
+                                    class="w-full h-full object-cover">
+                            </div>
+                            
+                            <!-- Slide 4 -->
+                            <div class="gallery-slide absolute inset-0 transition-all duration-700 ease-in-out translate-x-full" 
+                                data-slide="3">
+                                <img src="{{ asset('storage/gallery/Dokumentasi_4.jpg') }}" 
+                                    alt="Gallery Image 4" 
+                                    class="w-full h-full object-cover">
+                            </div>
+                            
+                            <!-- Slide 5 -->
+                            <div class="gallery-slide absolute inset-0 transition-all duration-700 ease-in-out translate-x-full" 
+                                data-slide="4">
+                                <img src="{{ asset('storage/gallery/Dokumentasi_5.jpg') }}" 
+                                    alt="Gallery Image 5" 
+                                    class="w-full h-full object-cover">
+                            </div>
                         </div>
-
-                        <!-- Navigation Arrows -->
-                        @if(count($galleries) > 1)
-                        <button class="gallery-nav gallery-prev absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full p-3 shadow-lg transition-all duration-300 hover:scale-110 z-10"
-                                onclick="changeSlide('prev')">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                            </svg>
-                        </button>
-                        
-                        <button class="gallery-nav gallery-next absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full p-3 shadow-lg transition-all duration-300 hover:scale-110 z-10"
-                                onclick="changeSlide('next')">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                            </svg>
-                        </button>
-                        @endif
 
                         <!-- Slide Counter -->
-                        @if(count($galleries) > 1)
                         <div class="absolute top-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm z-10">
-                            <span id="currentSlide">1</span> / <span id="totalSlides">{{ count($galleries) }}</span>
+                            <span id="currentSlideNumber">1</span> / <span id="totalSlides">5</span>
                         </div>
-                        @endif
                     </div>
                 </div>
 
-                <!-- Thumbnail Navigation -->
-                @if(count($galleries) > 1)
+                <!-- Thumbnail Navigation with Active Border -->
                 <div class="gallery-thumbnails-container">
-                    <div class="flex space-x-3 overflow-x-auto pb-4 scrollbar-hide" id="thumbnailContainer">
-                        @foreach($galleries as $index => $gallery)
-                        <button class="gallery-thumbnail flex-shrink-0 {{ $index === 0 ? 'active' : '' }}" 
-                                data-slide="{{ $index }}"
-                                onclick="goToSlide({{ $index }})">
-                            <div class="w-20 h-16 md:w-24 md:h-20 rounded-lg overflow-hidden border-2 transition-all duration-300">
-                                <img src="{{ $gallery->thumbnail_url }}" 
-                                    alt="{{ $gallery->title }}" 
-                                    class="w-full h-full object-cover">
+                    <div class="flex justify-center space-x-4 pb-4" id="thumbnailContainer">
+                        
+                        <!-- Thumbnail 1 -->
+                        <button class="gallery-thumbnail active-thumbnail relative" 
+                                data-slide="0"
+                                onclick="goToSlide(0)">
+                            <div class="thumbnail-wrapper">
+                                <img src="{{ asset('storage/gallery/Dokumentasi_1.jpg') }}" 
+                                    alt="Thumbnail 1" 
+                                    class="w-20 h-16 md:w-24 md:h-20 rounded-lg object-cover">
                             </div>
                             <div class="text-center mt-2">
-                                <span class="text-xs text-gray-600 font-medium">{{ $index + 1 }}</span>
+                                <span class="text-xs text-gray-600 font-medium">1</span>
                             </div>
                         </button>
-                        @endforeach
-                    </div>
-                </div>
-                @endif
-
-                <!-- Gallery Info & Actions -->
-                <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-                    
-                    <!-- Gallery Stats -->
-                    <div class="bg-gray-50 rounded-2xl p-6">
-                        <h4 class="font-semibold text-gray-800 mb-4">Gallery Stats</h4>
-                        <div class="space-y-2">
-                            <div class="flex justify-between">
-                                <span class="text-gray-600">Total Photos:</span>
-                                <span class="font-semibold">{{ count($galleries) }}</span>
+                        
+                        <!-- Thumbnail 2 -->
+                        <button class="gallery-thumbnail relative" 
+                                data-slide="1"
+                                onclick="goToSlide(1)">
+                            <div class="thumbnail-wrapper">
+                                <img src="{{ asset('storage/gallery/Dokumentasi_2.jpg') }}" 
+                                    alt="Thumbnail 2" 
+                                    class="w-20 h-16 md:w-24 md:h-20 rounded-lg object-cover">
                             </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-600">Categories:</span>
-                                <span class="font-semibold">{{ $galleries->pluck('category')->unique()->count() }}</span>
+                            <div class="text-center mt-2">
+                                <span class="text-xs text-gray-600 font-medium">2</span>
                             </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-600">Latest Update:</span>
-                                <span class="font-semibold">{{ $galleries->max('created_at')?->format('M Y') ?? 'N/A' }}</span>
+                        </button>
+                        
+                        <!-- Thumbnail 3 -->
+                        <button class="gallery-thumbnail relative" 
+                                data-slide="2"
+                                onclick="goToSlide(2)">
+                            <div class="thumbnail-wrapper">
+                                <img src="{{ asset('storage/gallery/Dokumentasi_3.jpg') }}" 
+                                    alt="Thumbnail 3" 
+                                    class="w-20 h-16 md:w-24 md:h-20 rounded-lg object-cover">
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- Current Image Info -->
-                    <div class="bg-gray-50 rounded-2xl p-6" id="currentImageInfo">
-                        @if(count($galleries) > 0)
-                        <h4 class="font-semibold text-gray-800 mb-4">Current Image</h4>
-                        <div class="space-y-2" id="imageInfoContent">
-                            <div class="flex justify-between">
-                                <span class="text-gray-600">Category:</span>
-                                <span class="font-semibold">{{ $galleries->first()->category_label ?? 'N/A' }}</span>
+                            <div class="text-center mt-2">
+                                <span class="text-xs text-gray-600 font-medium">3</span>
                             </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-600">Date:</span>
-                                <span class="font-semibold">{{ $galleries->first()->formatted_taken_date ?? 'N/A' }}</span>
+                        </button>
+                        
+                        <!-- Thumbnail 4 -->
+                        <button class="gallery-thumbnail relative" 
+                                data-slide="3"
+                                onclick="goToSlide(3)">
+                            <div class="thumbnail-wrapper">
+                                <img src="{{ asset('storage/gallery/Dokumentasi_4.jpg') }}" 
+                                    alt="Thumbnail 4" 
+                                    class="w-20 h-16 md:w-24 md:h-20 rounded-lg object-cover">
                             </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-600">Photographer:</span>
-                                <span class="font-semibold text-xs">{{ $galleries->first()->photographer ?? 'N/A' }}</span>
+                            <div class="text-center mt-2">
+                                <span class="text-xs text-gray-600 font-medium">4</span>
                             </div>
-                        </div>
-                        @endif
-                    </div>
-
-                    <!-- Actions -->
-                    <div class="bg-gray-50 rounded-2xl p-6">
-                        <h4 class="font-semibold text-gray-800 mb-4">Actions</h4>
-                        <div class="space-y-3">
-                            <button onclick="toggleAutoplay()" 
-                                    class="w-full bg-idol-gradient text-white px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition-opacity" 
-                                    id="autoplayBtn">
-                                ▶️ Start Slideshow
-                            </button>
-                            <button onclick="toggleFullscreen()" 
-                                    class="w-full bg-gray-800 text-white px-4 py-2 rounded-lg font-semibold hover:bg-gray-700 transition-colors">
-                                🔍 Fullscreen View
-                            </button>
-                            <button onclick="downloadImage()" 
-                                    class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-500 transition-colors">
-                                📥 Download Image
-                            </button>
-                        </div>
+                        </button>
+                        
+                        <!-- Thumbnail 5 -->
+                        <button class="gallery-thumbnail relative" 
+                                data-slide="4"
+                                onclick="goToSlide(4)">
+                            <div class="thumbnail-wrapper">
+                                <img src="{{ asset('storage/gallery/Dokumentasi_5.jpg') }}" 
+                                    alt="Thumbnail 5" 
+                                    class="w-20 h-16 md:w-24 md:h-20 rounded-lg object-cover">
+                            </div>
+                            <div class="text-center mt-2">
+                                <span class="text-xs text-gray-600 font-medium">5</span>
+                            </div>
+                        </button>
+                        
                     </div>
                 </div>
 
@@ -578,17 +562,92 @@
         </div>
     </div>
 
-    <!-- Music Section Placeholder -->
-    <section id="music" class="section-padding bg-white section">
+
+    <!-- Enhanced Music Section -->
+    <section id="music" class="section-padding bg-white section music-section">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center loading">
-                <h2 class="text-4xl font-bold text-gray-800 mb-4 title-underline">Music</h2>
-                <p class="text-gray-600 mb-12">Listen to our latest tracks</p>
-                <div class="bg-gray-100 rounded-lg p-12">
-                    <p class="text-gray-500 text-lg">Music section coming soon...</p>
+            <!-- Section Header -->
+            <div class="text-center mb-12 loading">
+                <div class="inline-block">
+                    <div class="flex items-center justify-center mb-4">
+                        <div class="h-1 w-20 bg-gradient-to-r from-idol-pink to-idol-purple rounded-full"></div>
+                    </div>
+                    <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4" style="font-style: italic;">
+                        Music
+                    </h2>
+                    <div class="flex items-center justify-center">
+                        <div class="h-1 w-20 bg-gradient-to-r from-idol-pink to-idol-purple rounded-full"></div>
+                    </div>
                 </div>
             </div>
-        </div>
+
+            <!-- Music Players Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+                
+                <!-- First Artist/Album -->
+                <div class="music-player-card loading" style="animation-delay: 0.2s">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-gradient-to-r from-idol-pink to-idol-purple rounded-full flex items-center justify-center mr-4">
+                                <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.42 1.56-.299.421-1.02.599-1.559.3z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-800">Artist Profile</h3>
+                                <p class="text-sm text-gray-600">Main Collection</p>
+                            </div>
+                        </div>
+                        
+                        <div class="relative">
+                            <iframe 
+                                class="spotify-iframe"
+                                style="border-radius:12px" 
+                                src="https://open.spotify.com/embed/artist/5GErAftzK6cVKZyCq8pkBR?utm_source=generator" 
+                                width="100%" 
+                                height="152" 
+                                frameBorder="0" 
+                                allowfullscreen="" 
+                                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                                loading="lazy">
+                            </iframe>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Second Artist/Album -->
+                <div class="music-player-card loading" style="animation-delay: 0.4s">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-gradient-to-r from-idol-purple to-idol-blue rounded-full flex items-center justify-center mr-4">
+                                <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.42 1.56-.299.421-1.02.599-1.559.3z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-800">Extended Collection</h3>
+                                <p class="text-sm text-gray-600">Additional Tracks</p>
+                            </div>
+                        </div>
+                        
+                        <div class="relative">
+                            <iframe 
+                                class="spotify-iframe"
+                                style="border-radius:12px" 
+                                src="https://open.spotify.com/embed/artist/2G6EbITdXN7h5bUYpUTIyZ?utm_source=generator&theme=0" 
+                                width="100%" 
+                                height="152" 
+                                frameBorder="0" 
+                                allowfullscreen="" 
+                                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                                loading="lazy">
+                            </iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
     </section>
 
     <!-- Schedule Section Placeholder -->

@@ -911,3 +911,645 @@ window.toggleAutoplay = toggleAutoplay;
 window.toggleFullscreen = toggleFullscreen;
 window.closeFullscreen = closeFullscreen;
 window.downloadImage = downloadImage;
+
+// Simplified Gallery JavaScript - Add to scripts.js
+
+
+
+// Initialize Simplified Gallery
+function initSimplifiedGallery() {
+    console.log('Initializing simplified gallery...');
+    
+    // Start auto-slide
+    startAutoSlide();
+    
+    // Add progress bar
+    addProgressBar();
+    
+    // Initialize keyboard navigation
+    document.addEventListener('keydown', handleGalleryKeyNavigation);
+    
+    // Pause on hover
+    const galleryContainer = document.getElementById('mainGallery');
+    if (galleryContainer) {
+        galleryContainer.addEventListener('mouseenter', pauseAutoSlide);
+        galleryContainer.addEventListener('mouseleave', resumeAutoSlide);
+    }
+    
+    console.log('Simplified gallery initialized');
+}
+
+// Auto-slide Functions
+function startAutoSlide() {
+    if (autoSlideInterval) {
+        clearInterval(autoSlideInterval);
+    }
+    
+    autoSlideInterval = setInterval(() => {
+        if (isAutoSliding) {
+            nextSlide();
+        }
+    }, 5000); // 5 seconds
+}
+
+function pauseAutoSlide() {
+    isAutoSliding = false;
+    // Remove progress bar animation
+    const progressBar = document.querySelector('.slide-progress');
+    if (progressBar) {
+        progressBar.style.animationPlayState = 'paused';
+    }
+}
+
+function resumeAutoSlide() {
+    isAutoSliding = true;
+    // Resume progress bar animation
+    const progressBar = document.querySelector('.slide-progress');
+    if (progressBar) {
+        progressBar.style.animationPlayState = 'running';
+    }
+}
+
+// Navigation Functions
+function nextSlide() {
+    const nextIndex = (currentSlideIndex + 1) % totalSlides;
+    goToSlide(nextIndex);
+}
+
+function prevSlide() {
+    const prevIndex = (currentSlideIndex - 1 + totalSlides) % totalSlides;
+    goToSlide(prevIndex);
+}
+
+function goToSlide(index) {
+    if (index === currentSlideIndex) return;
+    
+    // Get current and next slides
+    const currentSlide = document.querySelector(`.gallery-slide[data-slide="${currentSlideIndex}"]`);
+    const nextSlide = document.querySelector(`.gallery-slide[data-slide="${index}"]`);
+    
+    // Get current and next thumbnails
+    const currentThumbnail = document.querySelector(`.gallery-thumbnail[data-slide="${currentSlideIndex}"]`);
+    const nextThumbnail = document.querySelector(`.gallery-thumbnail[data-slide="${index}"]`);
+    
+    if (!currentSlide || !nextSlide) return;
+    
+    // Animate slide transition
+    animateSlideTransition(currentSlide, nextSlide, index > currentSlideIndex);
+    
+    // Update thumbnail active state
+    if (currentThumbnail) currentThumbnail.classList.remove('active-thumbnail');
+    if (nextThumbnail) nextThumbnail.classList.add('active-thumbnail');
+    
+    // Update current index
+    currentSlideIndex = index;
+    
+    // Update counter
+    updateSlideCounter();
+    
+    // Reset progress bar
+    resetProgressBar();
+}
+
+function animateSlideTransition(currentSlide, nextSlide, isNext) {
+    // Set initial positions
+    if (isNext) {
+        nextSlide.style.transform = 'translateX(100%)';
+    } else {
+        nextSlide.style.transform = 'translateX(-100%)';
+    }
+    
+    // Force reflow
+    nextSlide.offsetHeight;
+    
+    // Animate out current slide
+    if (isNext) {
+        currentSlide.style.transform = 'translateX(-100%)';
+    } else {
+        currentSlide.style.transform = 'translateX(100%)';
+    }
+    
+    // Animate in next slide
+    setTimeout(() => {
+        nextSlide.style.transform = 'translateX(0)';
+        nextSlide.classList.add('active-slide');
+        currentSlide.classList.remove('active-slide');
+    }, 50);
+    
+    // Reset positions after animation
+    setTimeout(() => {
+        if (!nextSlide.classList.contains('active-slide')) return;
+        
+        // Reset non-active slides
+        const allSlides = document.querySelectorAll('.gallery-slide');
+        allSlides.forEach((slide, idx) => {
+            if (idx !== currentSlideIndex) {
+                slide.style.transform = 'translateX(100%)';
+                slide.classList.remove('active-slide');
+            }
+        });
+    }, 700);
+}
+
+// Update slide counter
+function updateSlideCounter() {
+    const currentSlideElement = document.getElementById('currentSlideNumber');
+    if (currentSlideElement) {
+        currentSlideElement.textContent = currentSlideIndex + 1;
+    }
+}
+
+// Progress Bar Functions
+function addProgressBar() {
+    const galleryContainer = document.querySelector('.gallery-main-container');
+    if (galleryContainer && !document.querySelector('.slide-progress')) {
+        const progressBar = document.createElement('div');
+        progressBar.className = 'slide-progress';
+        galleryContainer.appendChild(progressBar);
+    }
+}
+
+function resetProgressBar() {
+    const progressBar = document.querySelector('.slide-progress');
+    if (progressBar) {
+        // Remove and re-add animation to restart it
+        progressBar.style.animation = 'none';
+        progressBar.offsetHeight; // Force reflow
+        progressBar.style.animation = 'slideProgress 5s linear infinite';
+    }
+}
+
+// Keyboard Navigation
+function handleGalleryKeyNavigation(event) {
+    // Only handle keys when gallery section is in view
+    const gallerySection = document.getElementById('gallery');
+    if (!gallerySection) return;
+    
+    const rect = gallerySection.getBoundingClientRect();
+    const isInView = rect.top < window.innerHeight && rect.bottom > 0;
+    
+    if (!isInView) return;
+    
+    switch (event.key) {
+        case 'ArrowLeft':
+            event.preventDefault();
+            prevSlide();
+            break;
+        case 'ArrowRight':
+            event.preventDefault();
+            nextSlide();
+            break;
+        case ' ':
+            event.preventDefault();
+            if (isAutoSliding) {
+                pauseAutoSlide();
+            } else {
+                resumeAutoSlide();
+            }
+            break;
+    }
+}
+
+// Touch/Swipe Support
+function initTouchNavigation() {
+    const galleryContainer = document.querySelector('.gallery-main-container');
+    if (!galleryContainer) return;
+    
+    let startX = 0;
+    let startY = 0;
+    let endX = 0;
+    let endY = 0;
+    
+    galleryContainer.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        pauseAutoSlide();
+    });
+    
+    galleryContainer.addEventListener('touchend', (e) => {
+        endX = e.changedTouches[0].clientX;
+        endY = e.changedTouches[0].clientY;
+        
+        const diffX = startX - endX;
+        const diffY = startY - endY;
+        
+        // Check if horizontal swipe is longer than vertical
+        if (Math.abs(diffX) > Math.abs(diffY)) {
+            // Minimum swipe distance
+            if (Math.abs(diffX) > 50) {
+                if (diffX > 0) {
+                    nextSlide(); // Swipe left = next
+                } else {
+                    prevSlide(); // Swipe right = prev
+                }
+            }
+        }
+        
+        // Resume auto-slide after a delay
+        setTimeout(() => {
+            resumeAutoSlide();
+        }, 1000);
+    });
+}
+
+// Intersection Observer for Auto-play Control
+function initGalleryVisibilityObserver() {
+    const gallerySection = document.getElementById('gallery');
+    if (!gallerySection) return;
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                // Gallery is visible, start auto-slide
+                if (!isAutoSliding) {
+                    resumeAutoSlide();
+                }
+            } else {
+                // Gallery is not visible, pause auto-slide
+                pauseAutoSlide();
+            }
+        });
+    }, {
+        threshold: 0.3 // Trigger when 30% of gallery is visible
+    });
+    
+    observer.observe(gallerySection);
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Delay initialization to ensure all elements are rendered
+    setTimeout(() => {
+        initSimplifiedGallery();
+        initTouchNavigation();
+        initGalleryVisibilityObserver();
+    }, 500);
+});
+
+// Cleanup on page unload
+window.addEventListener('beforeunload', function() {
+    if (autoSlideInterval) {
+        clearInterval(autoSlideInterval);
+    }
+});
+
+// Export functions for global access
+window.goToSlide = goToSlide;
+window.nextSlide = nextSlide;
+window.prevSlide = prevSlide;
+window.pauseAutoSlide = pauseAutoSlide;
+window.resumeAutoSlide = resumeAutoSlide;
+
+
+// ===============================================
+// MUSIC SECTION INTERACTIVE ANIMATIONS
+// ===============================================
+
+// Music Section Animation Controller
+class MusicSectionController {
+    constructor() {
+        this.musicCards = [];
+        this.isInitialized = false;
+        this.init();
+    }
+
+    init() {
+        if (this.isInitialized) return;
+        
+        this.setupMusicCards();
+        this.setupScrollAnimations();
+        this.setupHoverEffects();
+        this.setupMusicNotes();
+        this.isInitialized = true;
+    }
+
+    setupMusicCards() {
+        const cards = document.querySelectorAll('.music-player-card');
+        cards.forEach((card, index) => {
+            // Add data attributes for tracking
+            card.setAttribute('data-music-index', index);
+            
+            // Create glow effect element
+            const glowEffect = document.createElement('div');
+            glowEffect.className = 'music-glow-effect';
+            card.appendChild(glowEffect);
+
+            // Store card reference
+            this.musicCards.push({
+                element: card,
+                glow: glowEffect,
+                isPlaying: false,
+                iframe: card.querySelector('iframe')
+            });
+        });
+    }
+
+    setupScrollAnimations() {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('music-loading');
+                    // Add staggered animation delay
+                    const index = Array.from(entry.target.parentNode.children).indexOf(entry.target);
+                    entry.target.style.animationDelay = `${index * 0.2}s`;
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        // Observe music cards
+        this.musicCards.forEach(card => {
+            observer.observe(card.element);
+        });
+    }
+
+    setupHoverEffects() {
+        this.musicCards.forEach((card, index) => {
+            const { element, glow, iframe } = card;
+
+            // Mouse enter effect
+            element.addEventListener('mouseenter', () => {
+                this.activateCardGlow(index);
+                this.createFloatingNotes(element);
+                this.addRainbowPulse(element);
+            });
+
+            // Mouse leave effect
+            element.addEventListener('mouseleave', () => {
+                this.deactivateCardGlow(index);
+                this.removeFloatingNotes(element);
+                this.removeRainbowPulse(element);
+            });
+
+            // iframe hover effect
+            if (iframe) {
+                iframe.addEventListener('mouseenter', () => {
+                    this.enhanceIframeGlow(element);
+                });
+
+                iframe.addEventListener('mouseleave', () => {
+                    this.normalizeIframeGlow(element);
+                });
+            }
+        });
+    }
+
+    activateCardGlow(index) {
+        if (this.musicCards[index]) {
+            const { element, glow } = this.musicCards[index];
+            glow.style.opacity = '1';
+            element.classList.add('rainbow-pulse');
+            
+            // Add dynamic glow colors
+            setTimeout(() => {
+                glow.style.background = `linear-gradient(45deg, 
+                    rgba(255, 107, 157, 0.4), 
+                    rgba(196, 69, 105, 0.4), 
+                    rgba(72, 52, 212, 0.4), 
+                    rgba(29, 185, 84, 0.4))`;
+            }, 100);
+        }
+    }
+
+    deactivateCardGlow(index) {
+        if (this.musicCards[index]) {
+            const { element, glow } = this.musicCards[index];
+            glow.style.opacity = '0';
+            element.classList.remove('rainbow-pulse');
+            
+            // Reset glow background
+            setTimeout(() => {
+                glow.style.background = `linear-gradient(45deg, #ff6b9d, #c44569, #4834d4, #1db954)`;
+            }, 300);
+        }
+    }
+
+    enhanceIframeGlow(cardElement) {
+        const iframe = cardElement.querySelector('iframe');
+        if (iframe) {
+            iframe.style.filter = 'brightness(1.1) saturate(1.2)';
+            iframe.style.transform = 'scale(1.02)';
+            
+            // Add extra glow effect
+            const extraGlow = document.createElement('div');
+            extraGlow.className = 'iframe-extra-glow';
+            extraGlow.style.cssText = `
+                position: absolute;
+                top: -5px;
+                left: -5px;
+                right: -5px;
+                bottom: -5px;
+                background: linear-gradient(45deg, rgba(29, 185, 84, 0.3), rgba(255, 107, 157, 0.3));
+                border-radius: 17px;
+                z-index: 1;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            `;
+            
+            cardElement.appendChild(extraGlow);
+            setTimeout(() => extraGlow.style.opacity = '1', 50);
+        }
+    }
+
+    normalizeIframeGlow(cardElement) {
+        const iframe = cardElement.querySelector('iframe');
+        if (iframe) {
+            iframe.style.filter = 'brightness(0.95)';
+            iframe.style.transform = 'scale(1)';
+            
+            // Remove extra glow
+            const extraGlow = cardElement.querySelector('.iframe-extra-glow');
+            if (extraGlow) {
+                extraGlow.style.opacity = '0';
+                setTimeout(() => {
+                    if (extraGlow.parentNode) {
+                        extraGlow.parentNode.removeChild(extraGlow);
+                    }
+                }, 300);
+            }
+        }
+    }
+
+    createFloatingNotes(cardElement) {
+        const notes = ['♪', '♫', '♬', '♩', '♭', '♮', '♯'];
+        const noteCount = 3;
+
+        for (let i = 0; i < noteCount; i++) {
+            const note = document.createElement('div');
+            note.className = 'music-note floating-note';
+            note.textContent = notes[Math.floor(Math.random() * notes.length)];
+            
+            // Random positioning
+            const randomX = Math.random() * 80 + 10; // 10-90%
+            const randomY = Math.random() * 80 + 10; // 10-90%
+            
+            note.style.cssText = `
+                position: absolute;
+                left: ${randomX}%;
+                top: ${randomY}%;
+                font-size: ${16 + Math.random() * 8}px;
+                color: rgba(255, 107, 157, 0.6);
+                z-index: 10;
+                pointer-events: none;
+                animation: float-note 2s ease-in-out infinite;
+                animation-delay: ${i * 0.5}s;
+            `;
+            
+            cardElement.appendChild(note);
+        }
+    }
+
+    removeFloatingNotes(cardElement) {
+        const notes = cardElement.querySelectorAll('.floating-note');
+        notes.forEach(note => {
+            note.style.opacity = '0';
+            note.style.transform = 'translateY(-30px)';
+            setTimeout(() => {
+                if (note.parentNode) {
+                    note.parentNode.removeChild(note);
+                }
+            }, 300);
+        });
+    }
+
+    addRainbowPulse(element) {
+        element.classList.add('rainbow-pulse');
+    }
+
+    removeRainbowPulse(element) {
+        element.classList.remove('rainbow-pulse');
+    }
+
+    setupMusicNotes() {
+        // Add background floating notes
+        const musicSection = document.getElementById('music');
+        if (musicSection) {
+            this.createBackgroundNotes(musicSection);
+        }
+    }
+
+    createBackgroundNotes(container) {
+        const notes = ['♪', '♫', '♬'];
+        const noteCount = 6;
+
+        for (let i = 0; i < noteCount; i++) {
+            const note = document.createElement('div');
+            note.className = 'music-note background-note';
+            note.textContent = notes[Math.floor(Math.random() * notes.length)];
+            
+            note.style.cssText = `
+                position: absolute;
+                left: ${Math.random() * 100}%;
+                top: ${Math.random() * 100}%;
+                font-size: ${20 + Math.random() * 10}px;
+                color: rgba(255, 107, 157, 0.1);
+                z-index: 1;
+                pointer-events: none;
+                animation: float-note ${3 + Math.random() * 2}s ease-in-out infinite;
+                animation-delay: ${Math.random() * 3}s;
+            `;
+            
+            container.appendChild(note);
+        }
+    }
+
+    // Method to simulate music play/pause states
+    toggleMusicState(index, isPlaying) {
+        if (this.musicCards[index]) {
+            const { element } = this.musicCards[index];
+            this.musicCards[index].isPlaying = isPlaying;
+            
+            if (isPlaying) {
+                element.classList.add('music-player-playing');
+                element.classList.remove('music-player-paused');
+            } else {
+                element.classList.add('music-player-paused');
+                element.classList.remove('music-player-playing');
+            }
+        }
+    }
+
+    // Method to add vinyl record animation
+    addVinylRecord(cardElement) {
+        const vinyl = document.createElement('div');
+        vinyl.className = 'vinyl-record';
+        vinyl.innerHTML = '⚫';
+        vinyl.style.cssText = `
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            color: rgba(0, 0, 0, 0.1);
+            z-index: 5;
+            animation: vinyl-spin 3s linear infinite;
+        `;
+        
+        cardElement.appendChild(vinyl);
+    }
+
+    // Cleanup method
+    destroy() {
+        this.musicCards.forEach(card => {
+            card.element.removeEventListener('mouseenter', () => {});
+            card.element.removeEventListener('mouseleave', () => {});
+        });
+        this.musicCards = [];
+        this.isInitialized = false;
+    }
+}
+
+// Initialize Music Section when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize music section controller
+    const musicController = new MusicSectionController();
+    
+    // Make it globally accessible for debugging
+    window.musicController = musicController;
+});
+
+// Additional utility functions for music section
+function enhanceMusicSection() {
+    // Add smooth scroll to music section
+    const musicNavLink = document.querySelector('a[href="#music"]');
+    if (musicNavLink) {
+        musicNavLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('music').scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        });
+    }
+}
+
+// Initialize music section enhancements
+document.addEventListener('DOMContentLoaded', enhanceMusicSection);
+
+// Handle window resize for responsive animations
+window.addEventListener('resize', function() {
+    if (window.musicController) {
+        // Adjust animations for mobile
+        const isMobile = window.innerWidth < 768;
+        const musicCards = document.querySelectorAll('.music-player-card');
+        
+        musicCards.forEach(card => {
+            if (isMobile) {
+                card.style.transform = 'none';
+            }
+        });
+    }
+});
+
+// Performance optimization - pause animations when page is not visible
+document.addEventListener('visibilitychange', function() {
+    const musicSection = document.getElementById('music');
+    if (musicSection) {
+        if (document.hidden) {
+            musicSection.style.animationPlayState = 'paused';
+        } else {
+            musicSection.style.animationPlayState = 'running';
+        }
+    }
+});
