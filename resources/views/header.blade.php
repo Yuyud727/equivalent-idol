@@ -1,4 +1,4 @@
-<!-- Navigation Header -->
+<!-- Navigation Header - Updated Structure -->
 <nav class="fixed top-0 left-0 right-0 z-50 p-4 bg-white/80 backdrop-blur-md shadow-lg transition-all duration-300" id="navbar">
     <div class="flex justify-between items-center max-w-7xl mx-auto">
         <!-- Logo -->
@@ -13,15 +13,14 @@
             </a>
         </div>
         
-        <!-- Desktop Navigation -->
+        <!-- Desktop Navigation - Updated with new structure -->
         <div class="hidden md:flex space-x-8">
             <a href="#home" class="nav-link text-gray-600 hover:text-idol-pink transition-colors">Home</a>
             <a href="#about" class="nav-link text-gray-600 hover:text-idol-pink transition-colors">About</a>
-            <a href="#news" class="nav-link text-gray-600 hover:text-idol-pink transition-colors">News</a>
+            <a href="#schedule" class="nav-link text-gray-600 hover:text-idol-pink transition-colors">Schedule</a>
             <a href="#gallery" class="nav-link text-gray-600 hover:text-idol-pink transition-colors">Gallery</a>
             <a href="#music" class="nav-link text-gray-600 hover:text-idol-pink transition-colors">Music</a>
-            <a href="#schedule" class="nav-link text-gray-600 hover:text-idol-pink transition-colors">Schedule</a>
-            <a href="#contact" class="nav-link text-gray-600 hover:text-idol-pink transition-colors">Contact</a>
+            <a href="#activities" class="nav-link text-gray-600 hover:text-idol-pink transition-colors">Activities</a>
         </div>
         
         <!-- Hamburger Menu -->
@@ -33,7 +32,7 @@
     </div>
 </nav>
 
-<!-- Mobile Menu Overlay -->
+<!-- Mobile Menu Overlay - Updated Structure -->
 <div class="menu-overlay fixed inset-0 bg-black bg-opacity-90 z-40 opacity-0 invisible" id="menuOverlay">
     <div class="flex items-center justify-center h-full">
         <div class="text-center">
@@ -49,7 +48,7 @@
                             <a href="#about" class="mobile-nav-link text-white text-2xl font-semibold hover:text-idol-pink">About</a>
                         </div>
                         <div class="menu-item">
-                            <a href="#news" class="mobile-nav-link text-white text-2xl font-semibold hover:text-idol-pink">News</a>
+                            <a href="#schedule" class="mobile-nav-link text-white text-2xl font-semibold hover:text-idol-pink">Schedule</a>
                         </div>
                         <div class="menu-item">
                             <a href="#gallery" class="mobile-nav-link text-white text-2xl font-semibold hover:text-idol-pink">Gallery</a>
@@ -58,29 +57,26 @@
                             <a href="#music" class="mobile-nav-link text-white text-2xl font-semibold hover:text-idol-pink">Music</a>
                         </div>
                         <div class="menu-item">
-                            <a href="#schedule" class="mobile-nav-link text-white text-2xl font-semibold hover:text-idol-pink">Schedule</a>
-                        </div>
-                        <div class="menu-item">
-                            <a href="#contact" class="mobile-nav-link text-white text-2xl font-semibold hover:text-idol-pink">Contact</a>
+                            <a href="#activities" class="mobile-nav-link text-white text-2xl font-semibold hover:text-idol-pink">Activities</a>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Burger Menu Items -->
+                <!-- Quick Links -->
                 <div class="pt-6">
-                    <h3 class="text-gray-400 text-sm uppercase tracking-wide mb-4">Menu</h3>
+                    <h3 class="text-gray-400 text-sm uppercase tracking-wide mb-4">Quick Links</h3>
                     <div class="space-y-4">
                         <div class="menu-item">
-                            <a href="#" class="text-white text-lg hover:text-idol-pink">Menu Satu</a>
+                            <a href="https://instagram.com/equivalent" target="_blank" class="text-white text-lg hover:text-idol-pink">Instagram</a>
                         </div>
                         <div class="menu-item">
-                            <a href="#" class="text-white text-lg hover:text-idol-pink">Menu Dua</a>
+                            <a href="https://youtube.com/@equivalent" target="_blank" class="text-white text-lg hover:text-idol-pink">YouTube</a>
                         </div>
                         <div class="menu-item">
-                            <a href="#" class="text-white text-lg hover:text-idol-pink">Menu Tiga</a>
+                            <a href="https://open.spotify.com/artist/equivalent" target="_blank" class="text-white text-lg hover:text-idol-pink">Spotify</a>
                         </div>
                         <div class="menu-item">
-                            <a href="#" class="text-white text-lg hover:text-idol-pink">Menu Empat</a>
+                            <a href="https://tiktok.com/@equivalent" target="_blank" class="text-white text-lg hover:text-idol-pink">TikTok</a>
                         </div>
                     </div>
                 </div>

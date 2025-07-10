@@ -1,18 +1,45 @@
-// DOM Content Loaded
+// ===============================================
+// SCRIPTS.JS - EQUIVALENT IDOL WEBSITE
+// Complete Unified JavaScript File
+// ===============================================
+
+// ===============================================
+// GLOBAL VARIABLES & INITIALIZATION
+// ===============================================
+let autoSlideInterval = null;
+let isAutoSliding = true;
+let currentSlideIndex = 0;
+let totalSlides = 5;
+
+// ===============================================
+// DOM CONTENT LOADED - MAIN INITIALIZATION
+// ===============================================
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize all components
+    // Core Navigation & Layout
     initNavigation();
     initScrollAnimations();
     initSmoothScroll();
     initParallaxEffect();
+    
+    // Section-specific initializations
     initMemberCards();
     initSocialMediaLinks();
+    initSimplifiedGallery();
+    initActivitiesSection();
     
-    // Add loading animation to elements
+    // Additional utilities
     addLoadingAnimations();
+    addScrollToTopButton();
+    initNewsletter();
+    
+    // Initialize event handlers
+    initEventDetailModal();
+    initNewsRowHoverEffects();
 });
 
-// Navigation Functions
+// ===============================================
+// NAVIGATION HEADER FUNCTIONS
+// ===============================================
 function initNavigation() {
     const hamburgerMenu = document.getElementById('hamburgerMenu');
     const menuOverlay = document.getElementById('menuOverlay');
@@ -116,9 +143,10 @@ function initNavigation() {
     }
 }
 
-// Smooth Scroll Function
+// ===============================================
+// SMOOTH SCROLL FUNCTIONS
+// ===============================================
 function initSmoothScroll() {
-    // Add smooth scroll behavior
     document.documentElement.style.scrollBehavior = 'smooth';
 }
 
@@ -133,178 +161,9 @@ function scrollToSection(target) {
     }
 }
 
-// Scroll Animations
-function initScrollAnimations() {
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const element = entry.target;
-                
-                // Add animation classes
-                if (element.classList.contains('loading')) {
-                    element.classList.add('loaded');
-                }
-                
-                if (element.classList.contains('fade-in-up')) {
-                    element.classList.add('active');
-                }
-                
-                // Stagger animation for member cards
-                if (element.classList.contains('member-card')) {
-                    const index = Array.from(element.parentNode.children).indexOf(element);
-                    setTimeout(() => {
-                        element.classList.add('animate-bounce-in');
-                    }, index * 100);
-                }
-                
-                // Stop observing once animated
-                observer.unobserve(element);
-            }
-        });
-    }, observerOptions);
-
-    // Observe elements with animation classes
-    const animatedElements = document.querySelectorAll('.loading, .fade-in-up, .member-card');
-    animatedElements.forEach(el => observer.observe(el));
-}
-
-// Parallax Effect
-function initParallaxEffect() {
-    window.addEventListener('scroll', function() {
-        const scrolled = window.pageYOffset;
-        const parallaxElements = document.querySelectorAll('.parallax-bg, .hero-bg');
-        
-        parallaxElements.forEach(element => {
-            const speed = 0.5;
-            element.style.transform = `translateY(${scrolled * speed}px)`;
-        });
-    });
-}
-
-// Member Cards Functions
-function initMemberCards() {
-    const memberCards = document.querySelectorAll('.member-card');
-    
-    memberCards.forEach((card, index) => {
-        // Add stagger delay
-        card.style.setProperty('--i', index);
-        
-        // Add click event
-        card.addEventListener('click', function() {
-            const memberName = this.getAttribute('data-member');
-            if (memberName) {
-                openMemberDetail(memberName);
-            }
-        });
-        
-        // Add hover sound effect (optional)
-        card.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-10px) scale(1.02)';
-        });
-        
-        card.addEventListener('mouseleave', function() {
-            this.style.transform = '';
-        });
-    });
-}
-
-function openMemberDetail(memberName) {
-    // Member data
-    const memberData = {
-        ami: { 
-            name: 'Ami', 
-            color: 'bg-gradient-red', 
-            role: 'Leader & Main Vocalist',
-            description: 'Passionate leader with powerful vocals'
-        },
-        alyaa: { 
-            name: 'Alyaa', 
-            color: 'bg-gradient-pink', 
-            role: 'Main Dancer & Vocalist',
-            description: 'Energetic dancer with graceful movements'
-        },
-        ame: { 
-            name: 'Ame', 
-            color: 'bg-gradient-yellow', 
-            role: 'Visual & Lead Vocalist',
-            description: 'Charming visual with sweet voice'
-        },
-        ina: { 
-            name: 'Ina', 
-            color: 'bg-gradient-purple', 
-            role: 'Main Rapper & Vocalist',
-            description: 'Skilled rapper with versatile talents'
-        },
-        cantikkun: { 
-            name: 'Cantikkun', 
-            color: 'bg-gradient-blue', 
-            role: 'Maknae & Lead Dancer',
-            description: 'Youngest member with dynamic dance skills'
-        }
-    };
-
-    const member = memberData[memberName];
-    if (member) {
-        // For now, show an alert. You can implement a modal later
-        showMemberModal(member);
-    }
-}
-
-function showMemberModal(member) {
-    // Create modal HTML
-    const modalHTML = `
-        <div id="memberModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 opacity-0 invisible transition-all duration-300">
-            <div class="bg-white rounded-3xl p-8 m-4 max-w-md w-full transform scale-95 transition-all duration-300">
-                <div class="text-center">
-                    <div class="w-24 h-24 ${member.color} rounded-full mx-auto mb-4 flex items-center justify-center">
-                        <span class="text-white text-2xl font-bold">${member.name.charAt(0)}</span>
-                    </div>
-                    <h2 class="text-3xl font-bold text-gray-800 mb-2">${member.name}</h2>
-                    <p class="text-lg text-gray-600 mb-4">${member.role}</p>
-                    <p class="text-gray-500 mb-6">${member.description}</p>
-                    <button onclick="closeMemberModal()" class="bg-idol-gradient text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity">
-                        Close
-                    </button>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    // Add modal to body
-    document.body.insertAdjacentHTML('beforeend', modalHTML);
-    
-    // Show modal with animation
-    setTimeout(() => {
-        const modal = document.getElementById('memberModal');
-        const modalContent = modal.querySelector('div');
-        modal.classList.remove('opacity-0', 'invisible');
-        modal.classList.add('opacity-100', 'visible');
-        modalContent.classList.remove('scale-95');
-        modalContent.classList.add('scale-100');
-    }, 10);
-}
-
-function closeMemberModal() {
-    const modal = document.getElementById('memberModal');
-    if (modal) {
-        const modalContent = modal.querySelector('div');
-        modal.classList.remove('opacity-100', 'visible');
-        modal.classList.add('opacity-0', 'invisible');
-        modalContent.classList.remove('scale-100');
-        modalContent.classList.add('scale-95');
-        
-        setTimeout(() => {
-            modal.remove();
-        }, 300);
-    }
-}
-
-// Social Media Links
+// ===============================================
+// HOME SECTION (HERO) FUNCTIONS
+// ===============================================
 function initSocialMediaLinks() {
     const socialIcons = document.querySelectorAll('.social-icon');
     
@@ -346,865 +205,889 @@ function initSocialMediaLinks() {
     });
 }
 
-// Loading Animations
-function addLoadingAnimations() {
-    const elements = document.querySelectorAll('.animate-fade-in, .animate-slide-up, .animate-bounce-in');
-    
-    elements.forEach((element, index) => {
-        element.style.animationDelay = `${index * 0.1}s`;
-    });
-}
-
-// Utility Functions
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
-}
-
-// Newsletter Subscription
-function initNewsletter() {
-    const newsletterForm = document.querySelector('form[name="newsletter"]');
-    if (newsletterForm) {
-        newsletterForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = this.querySelector('input[type="email"]').value;
+    // ===============================================
+    // ABOUT SECTION (MEMBER PROFILES) FUNCTIONS
+    // ===============================================
+    function initMemberCards() {
+        const memberCards = document.querySelectorAll('.member-card');
+        
+        memberCards.forEach((card, index) => {
+            // Add stagger delay
+            card.style.setProperty('--i', index);
             
-            if (email) {
-                // Here you would typically send to your backend
-                alert('Thank you for subscribing! We\'ll keep you updated.');
-                this.reset();
-            }
+            // Add click event
+            card.addEventListener('click', function() {
+                const memberName = this.getAttribute('data-member');
+                if (memberName) {
+                    openMemberDetail(memberName);
+                }
+            });
+            
+            // Add hover sound effect (optional)
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-10px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = '';
+            });
         });
     }
-}
 
-// Scroll to Top Function
-function scrollToTop() {
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-    });
-}
+    // ===============================================
+    // SLIDE UP MODAL WITH CONSISTENT FLOATING HEARTS
+    // ===============================================
 
-// Add scroll to top button
-function addScrollToTopButton() {
-    const scrollButton = document.createElement('button');
-    scrollButton.innerHTML = '↑';
-    scrollButton.className = 'fixed bottom-6 right-6 bg-idol-gradient text-white w-12 h-12 rounded-full shadow-lg opacity-0 invisible transition-all duration-300 hover:scale-110 z-40';
-    scrollButton.onclick = scrollToTop;
-    
-    document.body.appendChild(scrollButton);
-    
-    window.addEventListener('scroll', function() {
-        if (window.pageYOffset > 300) {
-            scrollButton.classList.remove('opacity-0', 'invisible');
-            scrollButton.classList.add('opacity-100', 'visible');
-        } else {
-            scrollButton.classList.remove('opacity-100', 'visible');
-            scrollButton.classList.add('opacity-0', 'invisible');
+    let memberDetailData = {};
+    let isDataLoaded = false;
+    let currentMemberColor = '#6b7280';
+    let heartAnimationInterval = null;
+
+    // Load member data from database
+    async function loadMemberData() {
+        if (isDataLoaded) return;
+        
+        try {
+            const response = await fetch('/api/members');
+            if (response.ok) {
+                memberDetailData = await response.json();
+                isDataLoaded = true;
+                console.log('Member data loaded:', memberDetailData);
+            } else {
+                console.error('Failed to load member data');
+                useFallbackData();
+            }
+        } catch (error) {
+            console.error('Error loading member data:', error);
+            useFallbackData();
         }
-    });
-}
+    }
 
-// Initialize scroll to top button when DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
-    addScrollToTopButton();
-    initNewsletter();
-});
+    // Fallback data
+    function useFallbackData() {
+        memberDetailData = {
+            1: { member_no: 1, name: 'Ami', photo: 'members/Ami.jpg', color: '#ef4444', birth_date: '2002-03-15', jiko: 'Konnichiwa! Watashi wa Ami desu! Equivalent no leader toshite, minna no kokoro wo hitotsu ni suru koto ga watashi no shimei da to omotte imasu.' },
+            2: { member_no: 2, name: 'Alyaa', photo: 'members/Alyaa.jpg', color: '#ec4899', birth_date: '2003-07-22', jiko: 'Halo semua! Aku Alyaa dari Equivalent! Sebagai main dancer, aku selalu berusaha memberikan yang terbaik di setiap penampilan.' },
+            3: { member_no: 3, name: 'Ame', photo: 'members/Ame.jpg', color: '#fbbf24', birth_date: '2002-11-08', jiko: 'Hello everyone! I am Ame, the visual of Equivalent. Music has always been my sanctuary, and I hope my voice can bring comfort and joy to everyone.' },
+            4: { member_no: 4, name: 'Ina', photo: 'members/Ina.jpg', color: '#a855f7', birth_date: '2003-01-30', jiko: 'Yo yo yo! Ina in the house! Sebagai main rapper Equivalent, aku bawa flow dan lirik yang real.' },
+            5: { member_no: 5, name: 'Cantikkun', photo: 'members/Cantikkun.jpg', color: '#3b82f6', birth_date: '2004-05-12', jiko: 'Hai hai~ Cantikkun disini! Sebagai maknae Equivalent, aku pengen tunjukin kalau yang muda juga bisa bersinar!' }
+        };
+        isDataLoaded = true;
+    }
 
-// Export functions for global access
-window.openMemberDetail = openMemberDetail;
-window.closeMemberModal = closeMemberModal;
-window.scrollToSection = scrollToSection;
+    // Helper functions
+    function hexToRgb(hex) {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? { r: parseInt(result[1], 16), g: parseInt(result[2], 16), b: parseInt(result[3], 16) } : null;
+    }
 
+    function darkenColor(hex, amount = 0.3) {
+        const rgb = hexToRgb(hex);
+        if (!rgb) return hex;
+        return `rgb(${Math.round(rgb.r * (1 - amount))}, ${Math.round(rgb.g * (1 - amount))}, ${Math.round(rgb.b * (1 - amount))})`;
+    }
 
+    function lightenColor(hex, amount = 0.2) {
+        const rgb = hexToRgb(hex);
+        if (!rgb) return hex;
+        return `rgb(${Math.min(255, Math.round(rgb.r * (1 + amount)))}, ${Math.min(255, Math.round(rgb.g * (1 + amount)))}, ${Math.min(255, Math.round(rgb.b * (1 + amount)))})`;
+    }
 
-    //  Event detail functions 
-    function showEventDetail(eventId) {
-        // Ambil data event dari DOM atau AJAX request
-        // Untuk sekarang kita akan menggunakan data yang sudah di-embed di halaman
-        fetch(`/api/events/${eventId}`)
-            .then(response => response.json())
-            .then(event => {
-                const modalContent = document.getElementById('eventDetailContent');
-                modalContent.innerHTML = `
-                    <div class="text-center">
-                        <h3 class="text-3xl font-bold text-gray-800 mb-4" style="font-style: italic;">
-                            ${event.event_name}
-                        </h3>
-                        <div class="space-y-4 text-left">
-                            <div class="flex items-center">
-                                <svg class="w-5 h-5 text-idol-pink mr-3" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path>
-                                </svg>
-                                <span class="text-gray-700">${event.formatted_date}</span>
-                            </div>
-                            <div class="flex items-center">
-                                <svg class="w-5 h-5 text-idol-pink mr-3" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                                </svg>
-                                <span class="text-gray-700">${event.location}</span>
-                            </div>
-                            ${event.description ? `
-                            <div class="mt-4">
-                                <h4 class="font-semibold text-gray-800 mb-2">Deskripsi:</h4>
-                                <p class="text-gray-600">${event.description}</p>
-                            </div>
-                            ` : ''}
-                            ${event.ticket_url ? `
-                            <div class="mt-6 text-center">
-                                <a href="${event.ticket_url}" target="_blank" 
-                                class="inline-block bg-idol-gradient text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity">
-                                    Beli Tiket
-                                </a>
-                            </div>
-                            ` : ''}
-                        </div>
-                    </div>
+    function createNameGradient(memberColor) {
+        const rgb = hexToRgb(memberColor);
+        if (!rgb) return memberColor;
+        const lighter = lightenColor(memberColor, 0.3);
+        const darker = darkenColor(memberColor, 0.3);
+        return `linear-gradient(135deg, ${lighter} 0%, ${memberColor} 50%, ${darker} 100%)`;
+    }
+
+    // Create Consistent Floating Hearts Animation
+    function startFloatingHearts(memberColor) {
+        // Clear any existing animation
+        stopFloatingHearts();
+        
+        const rgb = hexToRgb(memberColor);
+        if (!rgb) return;
+        
+        // Create heart container if not exists
+        let heartContainer = document.querySelector('.bg_heart');
+        if (!heartContainer) {
+            heartContainer = document.createElement('div');
+            heartContainer.className = 'bg_heart';
+            document.getElementById('memberDetailModal').appendChild(heartContainer);
+        }
+
+        heartAnimationInterval = setInterval(function() {
+            const r_size = Math.floor(Math.random() * 35) + 15; // 15-50px size
+            const r_left = Math.floor(Math.random() * 90) + 5; // 5-95% positioning
+            const r_time = Math.floor(Math.random() * 3) + 4; // 4-7s duration
+            
+            // Create CONSISTENT color variations - more subtle
+            const baseOpacity = 0.6;
+            const opacityVariation = Math.random() * 0.3 + 0.4; // 0.4-0.7 opacity
+            
+            // Slight color variations (max ±15 instead of ±25)
+            const colorVariation = 10;
+            const r1 = Math.max(0, Math.min(255, rgb.r + (Math.random() - 0.5) * colorVariation));
+            const g1 = Math.max(0, Math.min(255, rgb.g + (Math.random() - 0.5) * colorVariation));
+            const b1 = Math.max(0, Math.min(255, rgb.b + (Math.random() - 0.5) * colorVariation));
+            
+            const heartColor = `rgba(${Math.round(r1)}, ${Math.round(g1)}, ${Math.round(b1)}, ${opacityVariation})`;
+            
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.style.cssText = `
+                width: ${r_size}px;
+                height: ${r_size}px;
+                left: ${r_left}%;
+                background: ${heartColor};
+                animation: love ${r_time}s ease-out forwards;
+                z-index: 1;
+            `;
+            
+            heartContainer.appendChild(heart);
+            
+            // Clean up hearts that finished animation
+            setTimeout(() => {
+                if (heart.parentNode) {
+                    heart.remove();
+                }
+            }, r_time * 1000);
+            
+        }, 800); // Generate every 800ms for smoother effect
+    }
+
+    function stopFloatingHearts() {
+        if (heartAnimationInterval) {
+            clearInterval(heartAnimationInterval);
+            heartAnimationInterval = null;
+        }
+        
+        const heartContainer = document.querySelector('.bg_heart');
+        if (heartContainer) {
+            heartContainer.innerHTML = '';
+        }
+    }
+
+    // Enhanced Open Member Detail dengan Slide Up Animation
+    async function openMemberDetail(memberId) {
+        console.log('Opening member detail for ID:', memberId);
+        
+        if (!isDataLoaded) await loadMemberData();
+
+        let member = memberDetailData[memberId];
+        
+        try {
+            const response = await fetch(`/api/members/${memberId}`);
+            if (response.ok) {
+                const freshData = await response.json();
+                member = {
+                    member_no: freshData.member_no, name: freshData.name, photo: freshData.photo, photo_url: freshData.photo_url,
+                    color: freshData.color, birth_date: freshData.birth_date, formatted_birth_date: freshData.formatted_birth_date, jiko: freshData.jiko
+                };
+                memberDetailData[memberId] = member;
+            }
+        } catch (error) {
+            console.error('Error fetching member detail:', error);
+        }
+
+        if (!member) {
+            console.error('Member not found:', memberId);
+            alert('Member data not found. Please try again.');
+            return;
+        }
+
+        // Update current member color
+        currentMemberColor = member.color;
+
+        const modal = document.getElementById('memberDetailModal');
+        const content = document.getElementById('memberDetailContent');
+        const backgroundOverlay = modal.querySelector('.absolute.inset-0');
+
+        if (!modal || !content) {
+            console.error('Modal elements not found');
+            return;
+        }
+
+        // Remove curtain elements if they exist
+        const leftCurtain = document.getElementById('leftCurtain');
+        const rightCurtain = document.getElementById('rightCurtain');
+        if (leftCurtain) leftCurtain.style.display = 'none';
+        if (rightCurtain) rightCurtain.style.display = 'none';
+
+        // Enhanced background with soft gray-white blur
+        if (backgroundOverlay) {
+            const rgb = hexToRgb(member.color);
+            if (rgb) {
+                backgroundOverlay.style.background = `
+                    radial-gradient(ellipse 600px 500px at 50% 50%, 
+                        rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.08) 0%,
+                        rgba(248, 250, 252, 0.85) 30%,
+                        rgba(241, 245, 249, 0.9) 60%,
+                        rgba(226, 232, 240, 0.95) 100%
+                    )
                 `;
-                
-                // Show modal
-                showEventModal();
-            })
-            .catch(error => {
-                console.error('Error fetching event details:', error);
-                // Fallback: show basic info
-                showBasicEventDetail(eventId);
-            });
-    }
+                backgroundOverlay.style.backdropFilter = 'blur(12px)';
+                backgroundOverlay.style.webkitBackdropFilter = 'blur(12px)';
+            }
+        }
 
-    function showBasicEventDetail(eventId) {
-        // Fallback function jika AJAX gagal
-        const button = document.querySelector(`[data-event-id="${eventId}"]`);
-        const row = button.closest('.news-row');
-        const date = row.querySelector('.col-span-2 span').textContent;
-        const eventName = row.querySelector('.col-span-4 span').textContent;
-        const location = row.querySelectorAll('.col-span-4 span')[1].textContent;
-        
-        const modalContent = document.getElementById('eventDetailContent');
-        modalContent.innerHTML = `
-            <div class="text-center">
-                <h3 class="text-3xl font-bold text-gray-800 mb-4" style="font-style: italic;">
-                    ${eventName}
-                </h3>
-                <div class="space-y-4 text-left">
-                    <div class="flex items-center">
-                        <svg class="w-5 h-5 text-idol-pink mr-3" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path>
-                        </svg>
-                        <span class="text-gray-700">${date}</span>
-                    </div>
-                    <div class="flex items-center">
-                        <svg class="w-5 h-5 text-idol-pink mr-3" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                        </svg>
-                        <span class="text-gray-700">${location}</span>
-                    </div>
-                    <div class="mt-4">
-                        <p class="text-gray-600">Detail event akan segera diumumkan. Pantau terus update dari kami!</p>
-                    </div>
-                </div>
-            </div>
-        `;
-        
-        showEventModal();
-    }
-
-    function showEventModal() {
-        const modal = document.getElementById('eventDetailModal');
-        const modalContainer = modal.querySelector('div');
+        // Show modal
         modal.classList.remove('opacity-0', 'invisible');
         modal.classList.add('opacity-100', 'visible');
-        modalContainer.classList.remove('scale-95');
-        modalContainer.classList.add('scale-100');
-        
-        // Prevent body scroll
         document.body.style.overflow = 'hidden';
-    }
 
-    function closeEventDetail() {
-        const modal = document.getElementById('eventDetailModal');
-        const modalContainer = modal.querySelector('div');
-        
-        modal.classList.remove('opacity-100', 'visible');
-        modal.classList.add('opacity-0', 'invisible');
-        modalContainer.classList.remove('scale-100');
-        modalContainer.classList.add('scale-95');
-        
-        // Restore body scroll
-        document.body.style.overflow = '';
-    }
+        // Initial state: content positioned below screen
+        content.style.transform = 'translateY(100vh) scale(0.9)';
+        content.style.opacity = '0';
 
-    // Initialize event detail modal
-    document.addEventListener('DOMContentLoaded', function() {
-        // Close modal when clicking outside
-        const eventModal = document.getElementById('eventDetailModal');
-        if (eventModal) {
-            eventModal.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    closeEventDetail();
-                }
-            });
+        fillMemberDataWithEnhancements(member);
+
+        // Start floating hearts animation
+        setTimeout(() => {
+            startFloatingHearts(member.color);
+        }, 300);
+
+        // Slide up animation
+        setTimeout(() => {
+            content.style.transition = 'all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+            content.style.transform = 'translateY(0) scale(1)';
+            content.style.opacity = '1';
+        }, 100);
+
+        // Enhanced member row click effect
+        const memberRow = document.querySelector(`[data-member-id="${memberId}"]`);
+        if (memberRow) {
+            const rgb = hexToRgb(member.color);
+            memberRow.style.transform = 'scale(0.95)';
+            memberRow.style.boxShadow = `0 0 30px rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.4)`;
+            setTimeout(() => {
+                memberRow.style.transform = 'scale(1)';
+                memberRow.style.boxShadow = '';
+            }, 300);
         }
-        
-        // Add hover effects to news rows
-        const newsRows = document.querySelectorAll('.news-row');
-        newsRows.forEach(row => {
-            row.addEventListener('mouseenter', function() {
-                this.style.backgroundColor = 'rgba(255, 107, 157, 0.05)';
-                this.style.borderRadius = '1rem';
-                this.style.padding = '1rem';
-                this.style.margin = '-0.5rem';
-            });
+    }
+
+    // Enhanced Fill Member Data
+    function fillMemberDataWithEnhancements(member) {
+        try {
+            const memberColor = member.color;
+            const rgb = hexToRgb(memberColor);
+
+            // Update photo
+            const memberPhoto = document.getElementById('memberPhoto');
+            if (memberPhoto) {
+                memberPhoto.src = member.photo_url || `/storage/${member.photo}`;
+                memberPhoto.alt = member.name;
+            }
+
+            // Enhanced member number badge
+            const memberNumberBadge = document.getElementById('memberNumberBadge');
+            if (memberNumberBadge) {
+                const badgeSpan = memberNumberBadge.querySelector('span');
+                if (badgeSpan) badgeSpan.textContent = member.member_no;
+                
+                memberNumberBadge.parentElement.style.top = '24px';
+                memberNumberBadge.parentElement.style.right = '24px';
+                memberNumberBadge.parentElement.style.left = 'auto';
+                
+                memberNumberBadge.style.background = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.15)`;
+                memberNumberBadge.style.border = `2px solid ${memberColor}`;
+                memberNumberBadge.style.boxShadow = `0 0 20px rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.3)`;
+                memberNumberBadge.style.backdropFilter = 'blur(10px)';
+            }
+
+            // Enhanced gradient name
+            const memberName = document.getElementById('memberName');
+            if (memberName) {
+                memberName.textContent = member.name;
+                const gradient = createNameGradient(memberColor);
+                memberName.style.background = gradient;
+                memberName.style.webkitBackgroundClip = 'text';
+                memberName.style.webkitTextFillColor = 'transparent';
+                memberName.style.backgroundClip = 'text';
+                
+                memberName.style.textShadow = `
+                    2px 2px 4px rgba(0, 0, 0, 0.1),
+                    0 0 20px rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.3),
+                    0 0 40px rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.1)
+                `;
+                memberName.style.animation = 'nameGlow 2s ease-in-out infinite alternate';
+            }
+
+            // Color display
+            const memberColorBox = document.getElementById('memberColorBox');
+            const memberColorText = document.getElementById('memberColorText');
+            if (memberColorBox) {
+                memberColorBox.style.backgroundColor = memberColor;
+                memberColorBox.style.boxShadow = `0 0 15px rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.4)`;
+            }
+            if (memberColorText) {
+                memberColorText.textContent = memberColor;
+                memberColorText.style.color = memberColor;
+                memberColorText.style.fontWeight = 'bold';
+            }
+
+            // Birthday section
+            const birthdaySection = document.querySelector('#memberBirthDate').parentElement;
+            const birthdayTitle = birthdaySection.querySelector('h3');
+            const birthdayIcon = birthdayTitle.querySelector('svg');
             
+            if (birthdayTitle) {
+                birthdayTitle.style.color = memberColor;
+                birthdayTitle.style.fontWeight = 'bold';
+            }
+            if (birthdayIcon) {
+                birthdayIcon.style.color = memberColor;
+                birthdayIcon.style.filter = `drop-shadow(0 0 4px rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.3))`;
+            }
+            
+            const memberBirthDate = document.getElementById('memberBirthDate');
+            if (memberBirthDate) {
+                const formattedDate = member.formatted_birth_date || formatBirthDate(member.birth_date);
+                memberBirthDate.textContent = formattedDate;
+                memberBirthDate.style.color = memberColor;
+                memberBirthDate.style.fontWeight = '600';
+                memberBirthDate.style.fontSize = '1.125rem';
+            }
+
+            // Jiko section
+            const jikoSection = document.querySelector('#memberJiko').parentElement.parentElement;
+            const jikoTitle = jikoSection.querySelector('h3');
+            const jikoIcon = jikoTitle.querySelector('svg');
+            
+            if (jikoTitle) {
+                jikoTitle.style.color = memberColor;
+                jikoTitle.style.fontWeight = 'bold';
+            }
+            if (jikoIcon) {
+                jikoIcon.style.color = memberColor;
+                jikoIcon.style.filter = `drop-shadow(0 0 4px rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.3))`;
+            }
+
+            const memberJiko = document.getElementById('memberJiko');
+            if (memberJiko) {
+                memberJiko.textContent = member.jiko || 'No introduction available.';
+                const jikoContainer = memberJiko.parentElement;
+                if (jikoContainer) {
+                    jikoContainer.style.background = `linear-gradient(135deg, 
+                        rgba(255, 255, 255, 0.9) 0%, 
+                        rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.05) 50%,
+                        rgba(255, 255, 255, 0.9) 100%)`;
+                    jikoContainer.style.border = `2px solid rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.2)`;
+                    jikoContainer.style.boxShadow = `inset 0 0 20px rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.05)`;
+                    jikoContainer.style.backdropFilter = 'blur(5px)';
+                }
+            }
+
+            // Enhanced close button
+            const closeButton = document.querySelector('button[onclick="closeMemberDetail()"]');
+            if (closeButton) {
+                const gradient = `linear-gradient(135deg, ${memberColor} 0%, ${darkenColor(memberColor, 0.15)} 100%)`;
+                closeButton.style.background = gradient;
+                closeButton.style.boxShadow = `0 4px 15px rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.3)`;
+                closeButton.style.border = `1px solid rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.5)`;
+                
+                closeButton.onmouseenter = function() {
+                    this.style.transform = 'scale(1.05)';
+                    this.style.boxShadow = `0 6px 25px rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.5)`;
+                    this.style.background = `linear-gradient(135deg, ${lightenColor(memberColor, 0.1)} 0%, ${memberColor} 100%)`;
+                };
+                
+                closeButton.onmouseleave = function() {
+                    this.style.transform = 'scale(1)';
+                    this.style.boxShadow = `0 4px 15px rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.3)`;
+                    this.style.background = gradient;
+                };
+            }
+
+            console.log('Member data filled with enhancements successfully:', member.name);
+        } catch (error) {
+            console.error('Error filling member data with enhancements:', error);
+        }
+    }
+
+    // Enhanced Close dengan Slide Down Animation
+    function closeMemberDetail() {
+        const modal = document.getElementById('memberDetailModal');
+        const content = document.getElementById('memberDetailContent');
+        const backgroundOverlay = modal.querySelector('.absolute.inset-0');
+
+        if (!modal || !content) {
+            console.error('Modal elements not found for closing');
+            return;
+        }
+
+        // Stop floating hearts animation
+        stopFloatingHearts();
+
+        // Slide down animation
+        content.style.transition = 'all 0.5s cubic-bezier(0.55, 0.055, 0.675, 0.19)';
+        content.style.transform = 'translateY(100vh) scale(0.9)';
+        content.style.opacity = '0';
+
+        // Hide modal after slide down
+        setTimeout(() => {
+            modal.classList.remove('opacity-100', 'visible');
+            modal.classList.add('opacity-0', 'invisible');
+            
+            // Reset background overlay
+            if (backgroundOverlay) {
+                backgroundOverlay.style.background = '';
+                backgroundOverlay.style.backdropFilter = '';
+                backgroundOverlay.style.webkitBackdropFilter = '';
+                backgroundOverlay.className = 'absolute inset-0 bg-black bg-opacity-80';
+            }
+            
+            document.body.style.overflow = '';
+            
+            // Reset content for next open
+            content.style.transition = '';
+        }, 500);
+    }
+
+    // Enhanced Member Row Hover Effects
+    function initMemberRowEffects() {
+        const memberRows = document.querySelectorAll('.member-row');
+        
+        memberRows.forEach(row => {
+            row.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px) scale(1.02)';
+                const colorBox = this.querySelector('[style*="background-color"]');
+                if (colorBox) {
+                    const colorMatch = colorBox.style.backgroundColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+                    if (colorMatch) {
+                        const [, r, g, b] = colorMatch;
+                        this.style.boxShadow = `0 8px 25px rgba(${r}, ${g}, ${b}, 0.3)`;
+                        this.style.borderColor = `rgba(${r}, ${g}, ${b}, 0.5)`;
+                    }
+                }
+            });
+
             row.addEventListener('mouseleave', function() {
-                this.style.backgroundColor = '';
-                this.style.borderRadius = '';
-                this.style.padding = '1rem 0';
-                this.style.margin = '';
+                this.style.transform = 'translateY(0) scale(1)';
+                this.style.boxShadow = '';
+                this.style.borderColor = '';
+            });
+
+            row.addEventListener('click', function(e) {
+                const colorBox = this.querySelector('[style*="background-color"]');
+                let rippleColor = 'rgba(255, 107, 157, 0.3)';
+                
+                if (colorBox) {
+                    const colorMatch = colorBox.style.backgroundColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+                    if (colorMatch) {
+                        const [, r, g, b] = colorMatch;
+                        rippleColor = `rgba(${r}, ${g}, ${b}, 0.2)`;
+                    }
+                }
+                
+                const ripple = document.createElement('div');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.cssText = `
+                    position: absolute; width: ${size}px; height: ${size}px; left: ${x}px; top: ${y}px;
+                    background: radial-gradient(circle, ${rippleColor} 0%, transparent 70%);
+                    border-radius: 50%; transform: scale(0); animation: ripple 0.6s ease-out; pointer-events: none; z-index: 1;
+                `;
+                
+                this.style.position = 'relative';
+                this.style.overflow = 'hidden';
+                this.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 600);
             });
         });
+    }
+
+    function formatBirthDate(dateString) {
+        try {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        } catch (error) {
+            return dateString;
+        }
+    }
+
+    // Enhanced Navigation
+    async function navigateToMember(direction) {
+        try {
+            const currentMemberNo = parseInt(document.getElementById('memberNumberBadge').querySelector('span').textContent);
+            let nextMemberNo = direction === 'prev' ? (currentMemberNo > 1 ? currentMemberNo - 1 : 5) : (currentMemberNo < 5 ? currentMemberNo + 1 : 1);
+            
+            let nextMember = memberDetailData[nextMemberNo];
+            
+            try {
+                const response = await fetch(`/api/members/${nextMemberNo}`);
+                if (response.ok) {
+                    const freshData = await response.json();
+                    nextMember = {
+                        member_no: freshData.member_no, name: freshData.name, photo: freshData.photo, photo_url: freshData.photo_url,
+                        color: freshData.color, birth_date: freshData.birth_date, formatted_birth_date: freshData.formatted_birth_date, jiko: freshData.jiko
+                    };
+                    memberDetailData[nextMemberNo] = nextMember;
+                }
+            } catch (error) {
+                console.error('Error fetching next member:', error);
+            }
+            
+            if (nextMember) {
+                // Update current member color dan restart heart animation
+                currentMemberColor = nextMember.color;
+                stopFloatingHearts();
+                setTimeout(() => {
+                    startFloatingHearts(nextMember.color);
+                }, 100);
+                
+                const content = document.getElementById('memberDetailContent');
+                content.style.transform = 'translateX(' + (direction === 'prev' ? '-' : '') + '30px)';
+                content.style.opacity = '0.6';
+                
+                setTimeout(() => {
+                    fillMemberDataWithEnhancements(nextMember);
+                    content.style.transform = 'translateX(0)';
+                    content.style.opacity = '1';
+                }, 200);
+            }
+        } catch (error) {
+            console.error('Error navigating to member:', error);
+        }
+    }
+
+    // Keyboard Navigation
+    function initKeyboardNavigation() {
+        document.addEventListener('keydown', function(e) {
+            const modal = document.getElementById('memberDetailModal');
+            const isModalOpen = modal && modal.classList.contains('visible');
+            
+            if (isModalOpen) {
+                switch(e.key) {
+                    case 'Escape': e.preventDefault(); closeMemberDetail(); break;
+                    case 'ArrowLeft': e.preventDefault(); navigateToMember('prev'); break;
+                    case 'ArrowRight': e.preventDefault(); navigateToMember('next'); break;
+                }
+            }
+        });
+    }
+
+    // Click outside to close
+    function initModalClickOutside() {
+        const modal = document.getElementById('memberDetailModal');
+        if (modal) {
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) closeMemberDetail();
+            });
+        }
+    }
+
+    // Initialize all functionality
+    function initMemberDetail() {
+        loadMemberData();
+        initMemberRowEffects();
+        initKeyboardNavigation();
+        initModalClickOutside();
+    }
+
+    // Initialize when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        initMemberDetail();
+        console.log('Slide Up Modal with Consistent Floating Hearts initialized! 💕✨');
     });
 
-    // Export functions for global access
-    window.showEventDetail = showEventDetail;
-    window.closeEventDetail = closeEventDetail;
+    // Global exports
+    window.openMemberDetail = openMemberDetail;
+    window.closeMemberDetail = closeMemberDetail;
+    window.navigateToMember = navigateToMember;
 
-
-    // Gallery Functionality - Add these functions to your scripts.js
-
-let currentSlideIndex = 0;
-let totalSlides = 0;
-let autoplayInterval = null;
-let isAutoplayActive = false;
-let galleryData = [];
-
-// Initialize Gallery
-function initGallery() {
-    const slides = document.querySelectorAll('.gallery-slide');
-    totalSlides = slides.length;
-    
-    if (totalSlides === 0) return;
-    
-    // Update total slides counter
-    const totalSlidesElement = document.getElementById('totalSlides');
-    if (totalSlidesElement) {
-        totalSlidesElement.textContent = totalSlides;
-    }
-    
-    // Store gallery data for later use
-    galleryData = Array.from(slides).map((slide, index) => {
-        const img = slide.querySelector('img');
-        const title = slide.querySelector('h3')?.textContent || '';
-        const description = slide.querySelector('p')?.textContent || '';
+    // Enhanced CSS dengan Slide Up Animation dan Consistent Hearts
+    const style = document.createElement('style');
+    style.textContent = `
+        /* ===== BASIC ANIMATIONS ===== */
+        @keyframes ripple { 
+            to { transform: scale(4); opacity: 0; } 
+        }
         
-        return {
-            index,
-            src: img?.src || '',
-            alt: img?.alt || '',
-            title,
-            description
-        };
-    });
-    
-    // Initialize keyboard navigation
-    document.addEventListener('keydown', handleKeyNavigation);
-    
-    // Initialize touch/swipe navigation
-    initTouchNavigation();
-    
-    // Update current image info
-    updateImageInfo(0);
-    
-    console.log('Gallery initialized with', totalSlides, 'slides');
-}
-
-// Change Slide Function
-function changeSlide(direction) {
-    if (totalSlides <= 1) return;
-    
-    const currentSlide = document.querySelector('.gallery-slide[data-slide="' + currentSlideIndex + '"]');
-    const currentThumbnail = document.querySelector('.gallery-thumbnail[data-slide="' + currentSlideIndex + '"]');
-    
-    // Remove active states
-    if (currentSlide) currentSlide.classList.remove('opacity-100');
-    if (currentThumbnail) currentThumbnail.classList.remove('active');
-    
-    // Calculate new index
-    if (direction === 'next') {
-        currentSlideIndex = (currentSlideIndex + 1) % totalSlides;
-    } else if (direction === 'prev') {
-        currentSlideIndex = (currentSlideIndex - 1 + totalSlides) % totalSlides;
-    }
-    
-    // Show new slide
-    const newSlide = document.querySelector('.gallery-slide[data-slide="' + currentSlideIndex + '"]');
-    const newThumbnail = document.querySelector('.gallery-thumbnail[data-slide="' + currentSlideIndex + '"]');
-    
-    if (newSlide) {
-        setTimeout(() => {
-            newSlide.classList.add('opacity-100');
-        }, 50);
-    }
-    
-    if (newThumbnail) {
-        newThumbnail.classList.add('active');
-        scrollThumbnailIntoView(newThumbnail);
-    }
-    
-    // Update counter
-    updateSlideCounter();
-    
-    // Update image info
-    updateImageInfo(currentSlideIndex);
-    
-    // Update fullscreen if open
-    updateFullscreenImage();
-}
-
-// Go to specific slide
-function goToSlide(index) {
-    if (index < 0 || index >= totalSlides || index === currentSlideIndex) return;
-    
-    const currentSlide = document.querySelector('.gallery-slide[data-slide="' + currentSlideIndex + '"]');
-    const currentThumbnail = document.querySelector('.gallery-thumbnail[data-slide="' + currentSlideIndex + '"]');
-    
-    // Remove active states
-    if (currentSlide) currentSlide.classList.remove('opacity-100');
-    if (currentThumbnail) currentThumbnail.classList.remove('active');
-    
-    // Set new index
-    currentSlideIndex = index;
-    
-    // Show new slide
-    const newSlide = document.querySelector('.gallery-slide[data-slide="' + currentSlideIndex + '"]');
-    const newThumbnail = document.querySelector('.gallery-thumbnail[data-slide="' + currentSlideIndex + '"]');
-    
-    if (newSlide) {
-        setTimeout(() => {
-            newSlide.classList.add('opacity-100');
-        }, 50);
-    }
-    
-    if (newThumbnail) {
-        newThumbnail.classList.add('active');
-        scrollThumbnailIntoView(newThumbnail);
-    }
-    
-    // Update counter and info
-    updateSlideCounter();
-    updateImageInfo(currentSlideIndex);
-    updateFullscreenImage();
-}
-
-// Update slide counter
-function updateSlideCounter() {
-    const currentSlideElement = document.getElementById('currentSlide');
-    if (currentSlideElement) {
-        currentSlideElement.textContent = currentSlideIndex + 1;
-    }
-}
-
-// Update image info panel
-function updateImageInfo(index) {
-    const imageInfoContent = document.getElementById('imageInfoContent');
-    if (!imageInfoContent || !galleryData[index]) return;
-    
-    const currentImage = galleryData[index];
-    
-    // You can expand this with more data from your gallery model
-    imageInfoContent.innerHTML = `
-        <div class="flex justify-between">
-            <span class="text-gray-600">Image:</span>
-            <span class="font-semibold">${index + 1} of ${totalSlides}</span>
-        </div>
-        <div class="flex justify-between">
-            <span class="text-gray-600">Title:</span>
-            <span class="font-semibold text-xs">${currentImage.title}</span>
-        </div>
-        <div class="flex justify-between">
-            <span class="text-gray-600">Status:</span>
-            <span class="font-semibold">Active</span>
-        </div>
+        @keyframes nameGlow {
+            0% { filter: brightness(1) drop-shadow(0 0 3px rgba(255, 255, 255, 0.2)); }
+            100% { filter: brightness(1.05) drop-shadow(0 0 8px rgba(255, 255, 255, 0.3)); }
+        }
+        
+        @keyframes heartPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+        
+        /* ===== CONSISTENT FLOATING HEARTS ANIMATION ===== */
+        .bg_heart {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 2;
+        }
+        
+        .heart {
+            position: absolute;
+            top: 110%;
+            transform: rotate(-45deg);
+            pointer-events: none;
+            will-change: transform, opacity;
+        }
+        
+        .heart:before {
+            position: absolute;
+            top: -50%;
+            left: 0;
+            display: block;
+            content: "";
+            width: 100%;
+            height: 100%;
+            background: inherit;
+            border-radius: 100%;
+        }
+        
+        .heart:after {
+            position: absolute;
+            top: 0;
+            right: -50%;
+            display: block;
+            content: "";
+            width: 100%;
+            height: 100%;
+            background: inherit;
+            border-radius: 100%;
+        }
+        
+        @keyframes love {
+            0% { 
+                top: 110%; 
+                opacity: 0;
+                transform: rotate(-45deg) scale(0.6);
+            }
+            15% {
+                opacity: 1;
+                transform: rotate(-45deg) scale(0.8);
+            }
+            85% {
+                opacity: 1;
+                transform: rotate(-45deg) scale(1);
+            }
+            100% { 
+                top: -15%; 
+                opacity: 0;
+                transform: rotate(-45deg) scale(1.1);
+            }
+        }
+        
+        /* ===== SLIDE UP MODAL ANIMATIONS ===== */
+        #memberDetailModal {
+            transition: all 0.3s ease-in-out;
+        }
+        
+        #memberDetailContent {
+            will-change: transform, opacity;
+        }
+        
+        /* ===== ENHANCED BLUR BACKGROUND ===== */
+        #memberDetailModal .absolute.inset-0 {
+            transition: all 0.4s ease-in-out;
+        }
+        
+        /* ===== MEMBER ROW STYLES ===== */
+        .member-row {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .member-row:hover {
+            transform: translateY(-2px) scale(1.02) !important;
+        }
+        
+        /* ===== MEMBER NAME GRADIENT ===== */
+        #memberName {
+            transition: all 0.3s ease-in-out;
+            background-size: 200% 200%;
+            animation: nameGlow 2.5s ease-in-out infinite alternate;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+        
+        /* ===== MEMBER BADGE ===== */
+        #memberNumberBadge {
+            transition: all 0.3s ease-in-out;
+            position: absolute !important;
+            top: 24px !important;
+            right: 24px !important;
+            left: auto !important;
+            z-index: 10;
+            animation: heartPulse 4s ease-in-out infinite;
+        }
+        
+        /* ===== CLOSE BUTTON ===== */
+        button[onclick="closeMemberDetail()"] {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* ===== ENHANCED BLUR EFFECTS ===== */
+        @supports (backdrop-filter: blur(10px)) {
+            #memberNumberBadge, .jiko-container {
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+            }
+        }
+        
+        /* ===== SMOOTH MODAL CONTAINER ===== */
+        #memberDetailContent {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 
+                0 25px 50px -12px rgba(0, 0, 0, 0.15),
+                0 0 0 1px rgba(255, 255, 255, 0.2);
+        }
+        
+        /* ===== RESPONSIVE DESIGN ===== */
+        @media (max-width: 768px) {
+            #memberNumberBadge {
+                top: 16px !important;
+                right: 16px !important;
+                width: 48px !important;
+                height: 48px !important;
+            }
+            
+            .heart {
+                max-width: 30px;
+                max-height: 30px;
+            }
+            
+            #memberDetailContent {
+                margin: 20px;
+                max-height: calc(100vh - 40px);
+                overflow-y: auto;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .heart {
+                max-width: 25px;
+                max-height: 25px;
+            }
+            
+            #memberDetailContent {
+                margin: 10px;
+                max-height: calc(100vh - 20px);
+            }
+            
+            .bg_heart {
+                overflow: hidden;
+            }
+        }
+        
+        /* ===== PERFORMANCE OPTIMIZATIONS ===== */
+        .heart, .bg_heart, #memberDetailContent {
+            will-change: transform, opacity;
+        }
+        
+        /* ===== SMOOTH TRANSITIONS ===== */
+        * {
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* ===== ANTI-ALIASING ===== */
+        .heart, #memberName, #memberNumberBadge {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* ===== HIDE CURTAIN ELEMENTS ===== */
+        #leftCurtain, #rightCurtain {
+            display: none !important;
+        }
+        
+        /* ===== ENHANCED BACKGROUND BLUR ===== */
+        #memberDetailModal.visible {
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        
+        /* ===== JIKO CONTAINER ENHANCEMENT ===== */
+        .jiko-container {
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border-radius: 16px;
+        }
+        
+        /* ===== SUBTLE ANIMATIONS ===== */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeOutDown {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+        }
+        
+        /* ===== MEMBER SECTION ANIMATIONS ===== */
+        .member-section {
+            animation: fadeInUp 0.5s ease-out;
+        }
+        
+        .member-section:nth-child(1) { animation-delay: 0.1s; }
+        .member-section:nth-child(2) { animation-delay: 0.2s; }
+        .member-section:nth-child(3) { animation-delay: 0.3s; }
+        .member-section:nth-child(4) { animation-delay: 0.4s; }
+        
+        /* ===== HEART SHADOW ENHANCEMENT ===== */
+        .heart {
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+        
+        /* ===== LOADING STATE ===== */
+        .loading-hearts::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: rgba(255, 255, 255, 0.8);
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     `;
-}
-
-// Scroll thumbnail into view
-function scrollThumbnailIntoView(thumbnail) {
-    const container = document.getElementById('thumbnailContainer');
-    if (!container || !thumbnail) return;
-    
-    const containerRect = container.getBoundingClientRect();
-    const thumbnailRect = thumbnail.getBoundingClientRect();
-    
-    if (thumbnailRect.left < containerRect.left) {
-        container.scrollLeft -= (containerRect.left - thumbnailRect.left + 10);
-    } else if (thumbnailRect.right > containerRect.right) {
-        container.scrollLeft += (thumbnailRect.right - containerRect.right + 10);
-    }
-}
-
-// Autoplay functionality
-function toggleAutoplay() {
-    const btn = document.getElementById('autoplayBtn');
-    
-    if (isAutoplayActive) {
-        clearInterval(autoplayInterval);
-        isAutoplayActive = false;
-        if (btn) btn.innerHTML = '▶️ Start Slideshow';
-    } else {
-        autoplayInterval = setInterval(() => {
-            changeSlide('next');
-        }, 3000); // Change slide every 3 seconds
-        isAutoplayActive = true;
-        if (btn) btn.innerHTML = '⏸️ Stop Slideshow';
-    }
-}
-
-// Fullscreen functionality
-function toggleFullscreen() {
-    const modal = document.getElementById('fullscreenModal');
-    const fullscreenImage = document.getElementById('fullscreenImage');
-    
-    if (!modal || !fullscreenImage) return;
-    
-    const currentImage = galleryData[currentSlideIndex];
-    if (!currentImage) return;
-    
-    fullscreenImage.src = currentImage.src;
-    fullscreenImage.alt = currentImage.alt;
-    
-    modal.classList.remove('opacity-0', 'invisible');
-    modal.classList.add('opacity-100', 'visible');
-    
-    // Prevent body scroll
-    document.body.style.overflow = 'hidden';
-}
-
-function closeFullscreen() {
-    const modal = document.getElementById('fullscreenModal');
-    if (!modal) return;
-    
-    modal.classList.remove('opacity-100', 'visible');
-    modal.classList.add('opacity-0', 'invisible');
-    
-    // Restore body scroll
-    document.body.style.overflow = '';
-}
-
-function updateFullscreenImage() {
-    const fullscreenImage = document.getElementById('fullscreenImage');
-    const modal = document.getElementById('fullscreenModal');
-    
-    if (fullscreenImage && modal && modal.classList.contains('visible')) {
-        const currentImage = galleryData[currentSlideIndex];
-        if (currentImage) {
-            fullscreenImage.src = currentImage.src;
-            fullscreenImage.alt = currentImage.alt;
-        }
-    }
-}
-
-// Download current image
-function downloadImage() {
-    const currentImage = galleryData[currentSlideIndex];
-    if (!currentImage) return;
-    
-    const link = document.createElement('a');
-    link.href = currentImage.src;
-    link.download = `equivalent-gallery-${currentSlideIndex + 1}.jpg`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
-
-// Keyboard navigation
-function handleKeyNavigation(event) {
-    // Only handle keys when gallery is in focus or fullscreen is open
-    const modal = document.getElementById('fullscreenModal');
-    const isFullscreenOpen = modal && modal.classList.contains('visible');
-    
-    if (!isFullscreenOpen && !event.target.closest('#gallery')) return;
-    
-    switch (event.key) {
-        case 'ArrowLeft':
-            event.preventDefault();
-            changeSlide('prev');
-            break;
-        case 'ArrowRight':
-            event.preventDefault();
-            changeSlide('next');
-            break;
-        case 'Escape':
-            if (isFullscreenOpen) {
-                event.preventDefault();
-                closeFullscreen();
-            }
-            break;
-        case ' ':
-            event.preventDefault();
-            toggleAutoplay();
-            break;
-        case 'f':
-        case 'F':
-            if (!isFullscreenOpen) {
-                event.preventDefault();
-                toggleFullscreen();
-            }
-            break;
-    }
-}
-
-// Touch/Swipe navigation
-function initTouchNavigation() {
-    const gallery = document.getElementById('mainCarousel');
-    if (!gallery) return;
-    
-    let startX = 0;
-    let startY = 0;
-    let endX = 0;
-    let endY = 0;
-    
-    gallery.addEventListener('touchstart', (e) => {
-        startX = e.touches[0].clientX;
-        startY = e.touches[0].clientY;
-    });
-    
-    gallery.addEventListener('touchend', (e) => {
-        endX = e.changedTouches[0].clientX;
-        endY = e.changedTouches[0].clientY;
-        
-        const diffX = startX - endX;
-        const diffY = startY - endY;
-        
-        // Check if horizontal swipe is longer than vertical
-        if (Math.abs(diffX) > Math.abs(diffY)) {
-            // Minimum swipe distance
-            if (Math.abs(diffX) > 50) {
-                if (diffX > 0) {
-                    changeSlide('next'); // Swipe left = next
-                } else {
-                    changeSlide('prev'); // Swipe right = prev
-                }
-            }
-        }
-    });
-}
-
-// Initialize gallery when DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize gallery after a short delay to ensure all elements are rendered
-    setTimeout(initGallery, 100);
-});
-
-// Export functions for global access
-window.changeSlide = changeSlide;
-window.goToSlide = goToSlide;
-window.toggleAutoplay = toggleAutoplay;
-window.toggleFullscreen = toggleFullscreen;
-window.closeFullscreen = closeFullscreen;
-window.downloadImage = downloadImage;
-
-// Simplified Gallery JavaScript - Add to scripts.js
-
-
-
-// Initialize Simplified Gallery
-function initSimplifiedGallery() {
-    console.log('Initializing simplified gallery...');
-    
-    // Start auto-slide
-    startAutoSlide();
-    
-    // Add progress bar
-    addProgressBar();
-    
-    // Initialize keyboard navigation
-    document.addEventListener('keydown', handleGalleryKeyNavigation);
-    
-    // Pause on hover
-    const galleryContainer = document.getElementById('mainGallery');
-    if (galleryContainer) {
-        galleryContainer.addEventListener('mouseenter', pauseAutoSlide);
-        galleryContainer.addEventListener('mouseleave', resumeAutoSlide);
-    }
-    
-    console.log('Simplified gallery initialized');
-}
-
-// Auto-slide Functions
-function startAutoSlide() {
-    if (autoSlideInterval) {
-        clearInterval(autoSlideInterval);
-    }
-    
-    autoSlideInterval = setInterval(() => {
-        if (isAutoSliding) {
-            nextSlide();
-        }
-    }, 5000); // 5 seconds
-}
-
-function pauseAutoSlide() {
-    isAutoSliding = false;
-    // Remove progress bar animation
-    const progressBar = document.querySelector('.slide-progress');
-    if (progressBar) {
-        progressBar.style.animationPlayState = 'paused';
-    }
-}
-
-function resumeAutoSlide() {
-    isAutoSliding = true;
-    // Resume progress bar animation
-    const progressBar = document.querySelector('.slide-progress');
-    if (progressBar) {
-        progressBar.style.animationPlayState = 'running';
-    }
-}
-
-// Navigation Functions
-function nextSlide() {
-    const nextIndex = (currentSlideIndex + 1) % totalSlides;
-    goToSlide(nextIndex);
-}
-
-function prevSlide() {
-    const prevIndex = (currentSlideIndex - 1 + totalSlides) % totalSlides;
-    goToSlide(prevIndex);
-}
-
-function goToSlide(index) {
-    if (index === currentSlideIndex) return;
-    
-    // Get current and next slides
-    const currentSlide = document.querySelector(`.gallery-slide[data-slide="${currentSlideIndex}"]`);
-    const nextSlide = document.querySelector(`.gallery-slide[data-slide="${index}"]`);
-    
-    // Get current and next thumbnails
-    const currentThumbnail = document.querySelector(`.gallery-thumbnail[data-slide="${currentSlideIndex}"]`);
-    const nextThumbnail = document.querySelector(`.gallery-thumbnail[data-slide="${index}"]`);
-    
-    if (!currentSlide || !nextSlide) return;
-    
-    // Animate slide transition
-    animateSlideTransition(currentSlide, nextSlide, index > currentSlideIndex);
-    
-    // Update thumbnail active state
-    if (currentThumbnail) currentThumbnail.classList.remove('active-thumbnail');
-    if (nextThumbnail) nextThumbnail.classList.add('active-thumbnail');
-    
-    // Update current index
-    currentSlideIndex = index;
-    
-    // Update counter
-    updateSlideCounter();
-    
-    // Reset progress bar
-    resetProgressBar();
-}
-
-function animateSlideTransition(currentSlide, nextSlide, isNext) {
-    // Set initial positions
-    if (isNext) {
-        nextSlide.style.transform = 'translateX(100%)';
-    } else {
-        nextSlide.style.transform = 'translateX(-100%)';
-    }
-    
-    // Force reflow
-    nextSlide.offsetHeight;
-    
-    // Animate out current slide
-    if (isNext) {
-        currentSlide.style.transform = 'translateX(-100%)';
-    } else {
-        currentSlide.style.transform = 'translateX(100%)';
-    }
-    
-    // Animate in next slide
-    setTimeout(() => {
-        nextSlide.style.transform = 'translateX(0)';
-        nextSlide.classList.add('active-slide');
-        currentSlide.classList.remove('active-slide');
-    }, 50);
-    
-    // Reset positions after animation
-    setTimeout(() => {
-        if (!nextSlide.classList.contains('active-slide')) return;
-        
-        // Reset non-active slides
-        const allSlides = document.querySelectorAll('.gallery-slide');
-        allSlides.forEach((slide, idx) => {
-            if (idx !== currentSlideIndex) {
-                slide.style.transform = 'translateX(100%)';
-                slide.classList.remove('active-slide');
-            }
-        });
-    }, 700);
-}
-
-// Update slide counter
-function updateSlideCounter() {
-    const currentSlideElement = document.getElementById('currentSlideNumber');
-    if (currentSlideElement) {
-        currentSlideElement.textContent = currentSlideIndex + 1;
-    }
-}
-
-// Progress Bar Functions
-function addProgressBar() {
-    const galleryContainer = document.querySelector('.gallery-main-container');
-    if (galleryContainer && !document.querySelector('.slide-progress')) {
-        const progressBar = document.createElement('div');
-        progressBar.className = 'slide-progress';
-        galleryContainer.appendChild(progressBar);
-    }
-}
-
-function resetProgressBar() {
-    const progressBar = document.querySelector('.slide-progress');
-    if (progressBar) {
-        // Remove and re-add animation to restart it
-        progressBar.style.animation = 'none';
-        progressBar.offsetHeight; // Force reflow
-        progressBar.style.animation = 'slideProgress 5s linear infinite';
-    }
-}
-
-// Keyboard Navigation
-function handleGalleryKeyNavigation(event) {
-    // Only handle keys when gallery section is in view
-    const gallerySection = document.getElementById('gallery');
-    if (!gallerySection) return;
-    
-    const rect = gallerySection.getBoundingClientRect();
-    const isInView = rect.top < window.innerHeight && rect.bottom > 0;
-    
-    if (!isInView) return;
-    
-    switch (event.key) {
-        case 'ArrowLeft':
-            event.preventDefault();
-            prevSlide();
-            break;
-        case 'ArrowRight':
-            event.preventDefault();
-            nextSlide();
-            break;
-        case ' ':
-            event.preventDefault();
-            if (isAutoSliding) {
-                pauseAutoSlide();
-            } else {
-                resumeAutoSlide();
-            }
-            break;
-    }
-}
-
-// Touch/Swipe Support
-function initTouchNavigation() {
-    const galleryContainer = document.querySelector('.gallery-main-container');
-    if (!galleryContainer) return;
-    
-    let startX = 0;
-    let startY = 0;
-    let endX = 0;
-    let endY = 0;
-    
-    galleryContainer.addEventListener('touchstart', (e) => {
-        startX = e.touches[0].clientX;
-        startY = e.touches[0].clientY;
-        pauseAutoSlide();
-    });
-    
-    galleryContainer.addEventListener('touchend', (e) => {
-        endX = e.changedTouches[0].clientX;
-        endY = e.changedTouches[0].clientY;
-        
-        const diffX = startX - endX;
-        const diffY = startY - endY;
-        
-        // Check if horizontal swipe is longer than vertical
-        if (Math.abs(diffX) > Math.abs(diffY)) {
-            // Minimum swipe distance
-            if (Math.abs(diffX) > 50) {
-                if (diffX > 0) {
-                    nextSlide(); // Swipe left = next
-                } else {
-                    prevSlide(); // Swipe right = prev
-                }
-            }
-        }
-        
-        // Resume auto-slide after a delay
-        setTimeout(() => {
-            resumeAutoSlide();
-        }, 1000);
-    });
-}
-
-// Intersection Observer for Auto-play Control
-function initGalleryVisibilityObserver() {
-    const gallerySection = document.getElementById('gallery');
-    if (!gallerySection) return;
-    
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                // Gallery is visible, start auto-slide
-                if (!isAutoSliding) {
-                    resumeAutoSlide();
-                }
-            } else {
-                // Gallery is not visible, pause auto-slide
-                pauseAutoSlide();
-            }
-        });
-    }, {
-        threshold: 0.3 // Trigger when 30% of gallery is visible
-    });
-    
-    observer.observe(gallerySection);
-}
-
-// Initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
-    // Delay initialization to ensure all elements are rendered
-    setTimeout(() => {
-        initSimplifiedGallery();
-        initTouchNavigation();
-        initGalleryVisibilityObserver();
-    }, 500);
-});
-
-// Cleanup on page unload
-window.addEventListener('beforeunload', function() {
-    if (autoSlideInterval) {
-        clearInterval(autoSlideInterval);
-    }
-});
-
-// Export functions for global access
-window.goToSlide = goToSlide;
-window.nextSlide = nextSlide;
-window.prevSlide = prevSlide;
-window.pauseAutoSlide = pauseAutoSlide;
-window.resumeAutoSlide = resumeAutoSlide;
+    document.head.appendChild(style);
 
 
 // ===============================================
-// MUSIC SECTION INTERACTIVE ANIMATIONS
+// MUSIC SECTION FUNCTIONS
 // ===============================================
-
 // Music Section Animation Controller
 class MusicSectionController {
     constructor() {
@@ -1471,24 +1354,6 @@ class MusicSectionController {
         }
     }
 
-    // Method to add vinyl record animation
-    addVinylRecord(cardElement) {
-        const vinyl = document.createElement('div');
-        vinyl.className = 'vinyl-record';
-        vinyl.innerHTML = '⚫';
-        vinyl.style.cssText = `
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 24px;
-            color: rgba(0, 0, 0, 0.1);
-            z-index: 5;
-            animation: vinyl-spin 3s linear infinite;
-        `;
-        
-        cardElement.appendChild(vinyl);
-    }
-
     // Cleanup method
     destroy() {
         this.musicCards.forEach(card => {
@@ -1524,11 +1389,534 @@ function enhanceMusicSection() {
     }
 }
 
-// Initialize music section enhancements
-document.addEventListener('DOMContentLoaded', enhanceMusicSection);
+// ===============================================
+// ACTIVITIES SECTION (OTSUKARE) FUNCTIONS
+// ===============================================
+// Sample activity data (in real app, this would come from database)
+const activitiesData = {
+    1: {
+        id: 1,
+        title: "Dance Rehearsal Session",
+        category: "rehearsal",
+        date: "2025-07-10T14:00:00",
+        location: "Studio A",
+        members: ["ami", "alyaa", "cantikkun"],
+        description: "Intensive dance practice for our upcoming summer concert. Working on new choreography and perfecting our synchronization.",
+        thumbnail: "rehearsal-1.jpg",
+        documentation: [
+            { image: "rehearsal-1-1.jpg", caption: "Warming up before practice" },
+            { image: "rehearsal-1-2.jpg", caption: "Learning new moves" },
+            { image: "rehearsal-1-3.jpg", caption: "Group formation practice" },
+            { image: "rehearsal-1-4.jpg", caption: "Break time selfie!" }
+        ]
+    },
+    2: {
+        id: 2,
+        title: "Live Stage Performance",
+        category: "performance",
+        date: "2025-07-09T19:30:00",
+        location: "Music Hall Tokyo",
+        members: ["ami", "alyaa", "ame", "ina", "cantikkun"],
+        description: "Amazing live performance in front of 2000 fans! The energy was incredible and we're so grateful for all the support.",
+        thumbnail: "performance-1.jpg",
+        documentation: [
+            { image: "performance-1-1.jpg", caption: "Getting ready backstage" },
+            { image: "performance-1-2.jpg", caption: "On stage moment" },
+            { image: "performance-1-3.jpg", caption: "Crowd interaction" },
+            { image: "performance-1-4.jpg", caption: "Post-show celebration" }
+        ]
+    },
+    3: {
+        id: 3,
+        title: "Magazine Photoshoot",
+        category: "photoshoot",
+        date: "2025-07-07T10:00:00",
+        location: "Photo Studio B",
+        members: ["ame", "ina"],
+        description: "Special photoshoot for the upcoming magazine feature. Trying out different concepts and styles for the summer edition.",
+        thumbnail: "photoshoot-1.jpg",
+        documentation: [
+            { image: "photoshoot-1-1.jpg", caption: "Makeup preparation" },
+            { image: "photoshoot-1-2.jpg", caption: "Concept discussion" },
+            { image: "photoshoot-1-3.jpg", caption: "Behind the camera" },
+            { image: "photoshoot-1-4.jpg", caption: "Final shots review" }
+        ]
+    }
+    // Add more data as needed...
+};
 
+let currentFilter = 'all';
+let visibleActivities = 10;
+
+// Initialize Activities Section
+function initActivitiesSection() {
+    // Check if activities section exists
+    if (!document.getElementById('activities')) return;
+    
+    setupActivityFilters();
+    loadActivityCards();
+    setupInfiniteScroll();
+    initActivityDetailModal();
+}
+
+// Filter Functions
+function filterActivities(category) {
+    currentFilter = category;
+    
+    // Update filter buttons
+    document.querySelectorAll('.activity-filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.querySelector(`[data-filter="${category}"]`).classList.add('active');
+    
+    // Filter cards
+    const cards = document.querySelectorAll('.activity-card');
+    cards.forEach(card => {
+        const cardCategory = card.getAttribute('data-category');
+        
+        if (category === 'all' || cardCategory === category) {
+            card.classList.remove('hide');
+            card.classList.add('show');
+            card.style.display = 'block';
+        } else {
+            card.classList.remove('show');
+            card.classList.add('hide');
+            setTimeout(() => {
+                card.style.display = 'none';
+            }, 300);
+        }
+    });
+}
+
+// Setup Activity Filters
+function setupActivityFilters() {
+    const filterButtons = document.querySelectorAll('.activity-filter-btn');
+    filterButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const filter = this.getAttribute('data-filter');
+            filterActivities(filter);
+        });
+    });
+}
+
+// Load Activity Cards
+function loadActivityCards() {
+    const grid = document.getElementById('activitiesGrid');
+    if (!grid) return;
+    
+    const cards = grid.querySelectorAll('.activity-card');
+    
+    cards.forEach((card, index) => {
+        // Add loading animation with stagger
+        setTimeout(() => {
+            card.classList.add('loading');
+        }, index * 100);
+        
+        // Add click event
+        card.addEventListener('click', function() {
+            const activityId = this.getAttribute('data-activity-id');
+            openActivityDetail(activityId);
+        });
+    });
+}
+
+// Open Activity Detail Modal
+function openActivityDetail(activityId) {
+    const activity = activitiesData[activityId];
+    
+    if (!activity) {
+        // Fallback for activities not in sample data
+        showBasicActivityDetail(activityId);
+        return;
+    }
+    
+    const modalContent = document.getElementById('activityDetailContent');
+    const memberTags = activity.members.map(member => 
+        `<span class="member-tag ${member}">${member.charAt(0).toUpperCase() + member.slice(1)}</span>`
+    ).join('');
+    
+    const documentationGrid = activity.documentation.map(doc => 
+        `<div class="activity-doc-item" onclick="openImageViewer('${doc.image}')">
+            <img src="{{ asset('storage/activities/${doc.image}') }}" 
+                 alt="${doc.caption}" 
+                 class="w-full h-full object-cover">
+        </div>`
+    ).join('');
+    
+    modalContent.innerHTML = `
+        <div class="text-center mb-6">
+            <h2 class="text-3xl font-bold text-gray-800 mb-2">${activity.title}</h2>
+            <div class="flex items-center justify-center space-x-4 text-gray-600 mb-4">
+                <span><i class="fas fa-calendar mr-2"></i>${formatDate(activity.date)}</span>
+                <span><i class="fas fa-map-marker-alt mr-2"></i>${activity.location}</span>
+            </div>
+            <div class="flex items-center justify-center mb-4">
+                ${memberTags}
+            </div>
+        </div>
+        
+        <div class="mb-6">
+            <h3 class="text-xl font-semibold text-gray-800 mb-3">Description</h3>
+            <p class="text-gray-600 leading-relaxed">${activity.description}</p>
+        </div>
+        
+        <div>
+            <h3 class="text-xl font-semibold text-gray-800 mb-3">Documentation</h3>
+            <div class="activity-docs-grid">
+                ${documentationGrid}
+            </div>
+        </div>
+    `;
+    
+    showActivityModal();
+}
+
+// Show Basic Activity Detail (fallback)
+function showBasicActivityDetail(activityId) {
+    const card = document.querySelector(`[data-activity-id="${activityId}"]`);
+    if (!card) return;
+    
+    const title = card.querySelector('h3').textContent;
+    const category = card.getAttribute('data-category');
+    
+    const modalContent = document.getElementById('activityDetailContent');
+    modalContent.innerHTML = `
+        <div class="text-center">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">${title}</h2>
+            <div class="mb-4">
+                <span class="member-tag ${category}">${category.charAt(0).toUpperCase() + category.slice(1)}</span>
+            </div>
+            <p class="text-gray-600 mb-6">
+                This is a ${category} activity from Equivalent. More details and documentation will be available soon!
+            </p>
+            <div class="bg-gray-100 rounded-2xl p-8">
+                <p class="text-gray-500">Documentation photos loading...</p>
+            </div>
+        </div>
+    `;
+    
+    showActivityModal();
+}
+
+// Show Activity Modal
+function showActivityModal() {
+    const modal = document.getElementById('activityDetailModal');
+    const container = document.getElementById('activityModalContainer');
+    
+    if (!modal || !container) return;
+    
+    modal.classList.remove('opacity-0', 'invisible');
+    modal.classList.add('opacity-100', 'visible');
+    container.classList.remove('scale-95');
+    container.classList.add('scale-100');
+    
+    // Prevent body scroll
+    document.body.style.overflow = 'hidden';
+}
+
+// Close Activity Detail
+function closeActivityDetail() {
+    const modal = document.getElementById('activityDetailModal');
+    const container = document.getElementById('activityModalContainer');
+    
+    if (!modal || !container) return;
+    
+    modal.classList.remove('opacity-100', 'visible');
+    modal.classList.add('opacity-0', 'invisible');
+    container.classList.remove('scale-100');
+    container.classList.add('scale-95');
+    
+    // Restore body scroll
+    document.body.style.overflow = '';
+}
+
+// Load More Activities
+function loadMoreActivities() {
+    const grid = document.getElementById('activitiesGrid');
+    const loadMoreBtn = document.getElementById('loadMoreBtn');
+    
+    if (!grid || !loadMoreBtn) return;
+    
+    // Show loading state
+    loadMoreBtn.textContent = 'Loading...';
+    loadMoreBtn.disabled = true;
+    
+    // Simulate loading delay
+    setTimeout(() => {
+        // Add more activity cards (in real app, fetch from server)
+        const newCards = createMoreActivityCards();
+        grid.appendChild(newCards);
+        
+        // Reset button
+        loadMoreBtn.textContent = 'Load More Activities';
+        loadMoreBtn.disabled = false;
+        
+        // Check if all loaded
+        visibleActivities += 10;
+        if (visibleActivities >= 50) { // Assuming max 50 activities
+            loadMoreBtn.style.display = 'none';
+        }
+    }, 1500);
+}
+
+// Create More Activity Cards (for demo)
+function createMoreActivityCards() {
+    const fragment = document.createDocumentFragment();
+    const categories = ['rehearsal', 'performance', 'photoshoot', 'recording'];
+    const colors = ['ami-red', 'alyaa-pink', 'ame-yellow', 'ina-purple', 'cantikkun-blue'];
+    
+    for (let i = 0; i < 5; i++) {
+        const category = categories[Math.floor(Math.random() * categories.length)];
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        
+        const card = document.createElement('div');
+        card.className = 'activity-card loading';
+        card.setAttribute('data-category', category);
+        card.setAttribute('data-activity-id', visibleActivities + i + 1);
+        card.onclick = () => openActivityDetail(visibleActivities + i + 1);
+        
+        card.innerHTML = `
+            <div class="relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer">
+                <div class="aspect-square overflow-hidden">
+                    <img src="{{ asset('storage/activities/placeholder.jpg') }}" 
+                         alt="Activity ${visibleActivities + i + 1}" 
+                         class="w-full h-full object-cover hover:scale-110 transition-transform duration-300">
+                </div>
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                <div class="absolute bottom-0 left-0 right-0 p-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-white text-sm font-semibold">New ${category}</h3>
+                            <p class="text-white/80 text-xs">${Math.floor(Math.random() * 30) + 1} days ago</p>
+                        </div>
+                        <div class="flex items-center space-x-1">
+                            <div class="w-2 h-2 bg-white rounded-full"></div>
+                            <div class="w-2 h-2 bg-white/60 rounded-full"></div>
+                            <div class="w-2 h-2 bg-white/60 rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="absolute top-3 left-3">
+                    <span class="bg-${color} text-white text-xs px-2 py-1 rounded-full font-semibold">${category.charAt(0).toUpperCase() + category.slice(1)}</span>
+                </div>
+            </div>
+        `;
+        
+        fragment.appendChild(card);
+    }
+    
+    return fragment;
+}
+
+// Setup Infinite Scroll (optional)
+function setupInfiniteScroll() {
+    let isLoading = false;
+    
+    window.addEventListener('scroll', () => {
+        if (isLoading) return;
+        
+        const scrollHeight = document.documentElement.scrollHeight;
+        const scrollTop = document.documentElement.scrollTop;
+        const clientHeight = document.documentElement.clientHeight;
+        
+        if (scrollTop + clientHeight >= scrollHeight - 1000) {
+            const loadMoreBtn = document.getElementById('loadMoreBtn');
+            if (loadMoreBtn && loadMoreBtn.style.display !== 'none') {
+                isLoading = true;
+                loadMoreActivities();
+                setTimeout(() => {
+                    isLoading = false;
+                }, 2000);
+            }
+        }
+    });
+}
+
+// Initialize Activity Detail Modal
+function initActivityDetailModal() {
+    // Close activity modal when clicking outside
+    const activityModal = document.getElementById('activityDetailModal');
+    if (activityModal) {
+        activityModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeActivityDetail();
+            }
+        });
+    }
+}
+
+// Utility Functions for Activities
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    const options = { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    };
+    return date.toLocaleDateString('id-ID', options);
+}
+
+function openImageViewer(imagePath) {
+    // Simple image viewer (can be enhanced with lightbox library)
+    const viewer = document.createElement('div');
+    viewer.className = 'fixed inset-0 z-50 bg-black bg-opacity-90 flex items-center justify-center';
+    viewer.onclick = () => viewer.remove();
+    
+    viewer.innerHTML = `
+        <div class="relative max-w-4xl max-h-full p-4">
+            <img src="{{ asset('storage/activities/${imagePath}') }}" 
+                 alt="Activity Image" 
+                 class="max-w-full max-h-full object-contain">
+            <button onclick="this.parentElement.parentElement.remove()" 
+                    class="absolute top-4 right-4 text-white text-2xl bg-black bg-opacity-50 rounded-full w-10 h-10 flex items-center justify-center">
+                ×
+            </button>
+        </div>
+    `;
+    
+    document.body.appendChild(viewer);
+    document.body.style.overflow = 'hidden';
+    
+    viewer.addEventListener('click', (e) => {
+        if (e.target === viewer) {
+            viewer.remove();
+            document.body.style.overflow = '';
+        }
+    });
+}
+
+// ===============================================
+// SHARED UTILITIES & ANIMATIONS
+// ===============================================
+// Scroll Animations
+function initScrollAnimations() {
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const element = entry.target;
+                
+                // Add animation classes
+                if (element.classList.contains('loading')) {
+                    element.classList.add('loaded');
+                }
+                
+                if (element.classList.contains('fade-in-up')) {
+                    element.classList.add('active');
+                }
+                
+                // Stagger animation for member cards
+                if (element.classList.contains('member-card')) {
+                    const index = Array.from(element.parentNode.children).indexOf(element);
+                    setTimeout(() => {
+                        element.classList.add('animate-bounce-in');
+                    }, index * 100);
+                }
+                
+                // Stop observing once animated
+                observer.unobserve(element);
+            }
+        });
+    }, observerOptions);
+
+    // Observe elements with animation classes
+    const animatedElements = document.querySelectorAll('.loading, .fade-in-up, .member-card');
+    animatedElements.forEach(el => observer.observe(el));
+}
+
+// Parallax Effect
+function initParallaxEffect() {
+    window.addEventListener('scroll', function() {
+        const scrolled = window.pageYOffset;
+        const parallaxElements = document.querySelectorAll('.parallax-bg, .hero-bg');
+        
+        parallaxElements.forEach(element => {
+            const speed = 0.5;
+            element.style.transform = `translateY(${scrolled * speed}px)`;
+        });
+    });
+}
+
+// Loading Animations
+function addLoadingAnimations() {
+    const elements = document.querySelectorAll('.animate-fade-in, .animate-slide-up, .animate-bounce-in');
+    
+    elements.forEach((element, index) => {
+        element.style.animationDelay = `${index * 0.1}s`;
+    });
+}
+
+// Newsletter Subscription
+function initNewsletter() {
+    const newsletterForm = document.querySelector('form[name="newsletter"]');
+    if (newsletterForm) {
+        newsletterForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = this.querySelector('input[type="email"]').value;
+            
+            if (email) {
+                // Here you would typically send to your backend
+                alert('Thank you for subscribing! We\'ll keep you updated.');
+                this.reset();
+            }
+        });
+    }
+}
+
+// Scroll to Top Function
+function scrollToTop() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+}
+
+// Add scroll to top button
+function addScrollToTopButton() {
+    const scrollButton = document.createElement('button');
+    scrollButton.innerHTML = '↑';
+    scrollButton.className = 'fixed bottom-6 right-6 bg-idol-gradient text-white w-12 h-12 rounded-full shadow-lg opacity-0 invisible transition-all duration-300 hover:scale-110 z-40';
+    scrollButton.onclick = scrollToTop;
+    
+    document.body.appendChild(scrollButton);
+    
+    window.addEventListener('scroll', function() {
+        if (window.pageYOffset > 300) {
+            scrollButton.classList.remove('opacity-0', 'invisible');
+            scrollButton.classList.add('opacity-100', 'visible');
+        } else {
+            scrollButton.classList.remove('opacity-100', 'visible');
+            scrollButton.classList.add('opacity-0', 'invisible');
+        }
+    });
+}
+
+// ===============================================
+// UTILITY FUNCTIONS
+// ===============================================
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// ===============================================
+// PERFORMANCE OPTIMIZATIONS
+// ===============================================
 // Handle window resize for responsive animations
-window.addEventListener('resize', function() {
+window.addEventListener('resize', debounce(function() {
     if (window.musicController) {
         // Adjust animations for mobile
         const isMobile = window.innerWidth < 768;
@@ -1540,7 +1928,7 @@ window.addEventListener('resize', function() {
             }
         });
     }
-});
+}, 250));
 
 // Performance optimization - pause animations when page is not visible
 document.addEventListener('visibilitychange', function() {
@@ -1548,8 +1936,39 @@ document.addEventListener('visibilitychange', function() {
     if (musicSection) {
         if (document.hidden) {
             musicSection.style.animationPlayState = 'paused';
+            // Pause gallery auto-slide
+            pauseAutoSlide();
         } else {
             musicSection.style.animationPlayState = 'running';
+            // Resume gallery auto-slide
+            resumeAutoSlide();
         }
     }
 });
+
+// Cleanup on page unload
+window.addEventListener('beforeunload', function() {
+    if (autoSlideInterval) {
+        clearInterval(autoSlideInterval);
+    }
+});
+
+// ===============================================
+// GLOBAL FUNCTION EXPORTS
+// ===============================================
+// Export functions for global access
+window.openMemberDetail = openMemberDetail;
+window.closeMemberModal = closeMemberModal;
+window.scrollToSection = scrollToSection;
+window.showEventDetail = showEventDetail;
+window.closeEventDetail = closeEventDetail;
+window.goToSlide = goToSlide;
+window.nextSlide = nextSlide;
+window.prevSlide = prevSlide;
+window.pauseAutoSlide = pauseAutoSlide;
+window.resumeAutoSlide = resumeAutoSlide;
+window.filterActivities = filterActivities;
+window.openActivityDetail = openActivityDetail;
+window.closeActivityDetail = closeActivityDetail;
+window.loadMoreActivities = loadMoreActivities;
+window.openImageViewer = openImageViewer;

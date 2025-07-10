@@ -119,9 +119,11 @@
         </div>
     </section>
 
-    <!-- About/Profile Section -->
+<!-- About/Profile Section - Updated with working member data -->
     <section id="about" class="section-padding bg-gray-50 section">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            
             <!-- Page Header -->
             <div class="text-center mb-16 loading">
                 <h2 class="text-5xl md:text-6xl font-bold text-gray-800 mb-4 title-underline">
@@ -132,89 +134,78 @@
                 </p>
             </div>
 
-            <!-- Members Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8 mb-16">
+            <!-- Members Table -->
+            <div class="bg-white rounded-3xl shadow-xl overflow-hidden mb-16 loading">
+                <!-- Table Header -->
+                <div class="bg-gradient-to-r from-idol-pink to-idol-purple p-6">
+                    <h3 class="text-2xl font-bold text-white text-center">Our Members</h3>
+                </div>
                 
-                <!-- Ami -->
-                <div class="member-card loading" 
-                     style="--i: 0" 
-                     data-member="ami"
-                     onclick="openMemberDetail('ami')">
-                    <div class="bg-gradient-red rounded-3xl p-6 shadow-xl card-hover">
-                        <div class="aspect-square rounded-2xl overflow-hidden mb-4 bg-white/20">
-                            <img src="{{ asset('images/members/Ami.jpg') }}" 
-                                 alt="Ami" 
-                                 class="member-image w-full h-full object-cover">
+                <!-- Table Content -->
+                <div class="p-6">
+                    <div class="grid grid-cols-1 gap-4">
+                        
+                        @forelse($members as $member)
+                        <!-- Member Row -->
+                        <div class="member-row flex items-center p-4 rounded-2xl border-2 border-gray-100 hover:border-idol-pink hover:shadow-lg transition-all duration-300 cursor-pointer"
+                            onclick="openMemberDetail({{ $member->member_no }})"
+                            data-member-id="{{ $member->member_no }}">
+                            
+                            <!-- Member Number -->
+                            <div class="flex-shrink-0 w-12 h-12 bg-gradient-to-r from-idol-pink to-idol-purple rounded-full flex items-center justify-center mr-4">
+                                <span class="text-white font-bold text-lg">{{ $member->member_no }}</span>
+                            </div>
+                            
+                            <!-- Member Photo -->
+                            <div class="flex-shrink-0 w-16 h-16 rounded-full overflow-hidden mr-4 border-4 border-white shadow-lg">
+                                @if($member->photo && file_exists(storage_path('app/public/' . $member->photo)))
+                                    <img src="{{ asset('storage/' . $member->photo) }}" 
+                                        alt="{{ $member->name }}" 
+                                        class="w-full h-full object-cover">
+                                @else
+                                    <div class="w-full h-full bg-gradient-to-br from-gray-400 to-gray-600 flex items-center justify-center text-white font-bold text-xl">
+                                        {{ substr($member->name, 0, 1) }}
+                                    </div>
+                                @endif
+                            </div>
+                            
+                            <!-- Member Name -->
+                            <div class="flex-1">
+                                <h4 class="text-xl font-bold text-gray-800">{{ $member->name }}</h4>
+                                <div class="flex items-center mt-1">
+                                    <div class="w-4 h-4 rounded-full mr-2" style="background-color: {{ $member->color }}"></div>
+                                    <span class="text-sm text-gray-500">Click to see details</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Arrow Icon -->
+                            <div class="flex-shrink-0">
+                                <svg class="w-6 h-6 text-gray-400 transform transition-transform duration-300 group-hover:translate-x-1" 
+                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </div>
                         </div>
-                        <h3 class="member-name text-white text-center">Ami</h3>
-                        <p class="text-white/80 text-center text-sm mt-2">Leader & Main Vocalist</p>
+                        @empty
+                        <div class="text-center py-8">
+                            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                                <strong class="font-bold">No members data available!</strong>
+                                <span class="block sm:inline">Please run: php artisan db:seed --class=DetailMemberSeeder</span>
+                            </div>
+                            <div class="text-sm text-gray-500">
+                                <p>Troubleshooting steps:</p>
+                                <ol class="list-decimal list-inside mt-2">
+                                    <li>Run the seeder command above</li>
+                                    <li>Check if DetailMember model exists</li>
+                                    <li>Verify database connection</li>
+                                    <li>Check storage/logs/laravel.log for errors</li>
+                                </ol>
+                            </div>
+                        </div>
+                        @endforelse
+                        
                     </div>
                 </div>
-
-                <!-- Alyaa -->
-                <div class="member-card loading" 
-                     style="--i: 1" 
-                     data-member="alyaa"
-                     onclick="openMemberDetail('alyaa')">
-                    <div class="bg-gradient-pink rounded-3xl p-6 shadow-xl card-hover">
-                        <div class="aspect-square rounded-2xl overflow-hidden mb-4 bg-white/20">
-                            <img src="{{ asset('images/members/Alyaa.jpg') }}" 
-                                 alt="Alyaa" 
-                                 class="member-image w-full h-full object-cover">
-                        </div>
-                        <h3 class="member-name text-white text-center">Alyaa</h3>
-                        <p class="text-white/80 text-center text-sm mt-2">Main Dancer & Vocalist</p>
-                    </div>
-                </div>
-
-                <!-- Ame -->
-                <div class="member-card loading" 
-                     style="--i: 2" 
-                     data-member="ame"
-                     onclick="openMemberDetail('ame')">
-                    <div class="bg-gradient-yellow rounded-3xl p-6 shadow-xl card-hover">
-                        <div class="aspect-square rounded-2xl overflow-hidden mb-4 bg-white/20">
-                            <img src="{{ asset('images/members/Ame.jpg') }}" 
-                                 alt="Ame" 
-                                 class="member-image w-full h-full object-cover">
-                        </div>
-                        <h3 class="member-name text-white text-center">Ame</h3>
-                        <p class="text-white/80 text-center text-sm mt-2">Visual & Lead Vocalist</p>
-                    </div>
-                </div>
-
-                <!-- Ina -->
-                <div class="member-card loading" 
-                     style="--i: 3" 
-                     data-member="ina"
-                     onclick="openMemberDetail('ina')">
-                    <div class="bg-gradient-purple rounded-3xl p-6 shadow-xl card-hover">
-                        <div class="aspect-square rounded-2xl overflow-hidden mb-4 bg-white/20">
-                            <img src="{{ asset('images/members/Ina.jpg') }}" 
-                                 alt="Ina" 
-                                 class="member-image w-full h-full object-cover">
-                        </div>
-                        <h3 class="member-name text-white text-center">Ina</h3>
-                        <p class="text-white/80 text-center text-sm mt-2">Main Rapper & Vocalist</p>
-                    </div>
-                </div>
-
-                <!-- Cantikkun -->
-                <div class="member-card loading" 
-                     style="--i: 4" 
-                     data-member="cantikkun"
-                     onclick="openMemberDetail('cantikkun')">
-                    <div class="bg-gradient-blue rounded-3xl p-6 shadow-xl card-hover">
-                        <div class="aspect-square rounded-2xl overflow-hidden mb-4 bg-white/20">
-                            <img src="{{ asset('images/members/Cantikkun.jpg') }}" 
-                                 alt="Cantikkun" 
-                                 class="member-image w-full h-full object-cover">
-                        </div>
-                        <h3 class="member-name text-white text-center">Cantikkun</h3>
-                        <p class="text-white/80 text-center text-sm mt-2">Maknae & Lead Dancer</p>
-                    </div>
-                </div>
-
             </div>
 
             <!-- Group Introduction -->
@@ -231,7 +222,7 @@
                             <div class="text-sm">Debut Year</div>
                         </div>
                         <div class="bg-gradient-to-br from-idol-purple to-idol-blue p-6 rounded-2xl text-white">
-                            <div class="text-3xl font-bold mb-2">5</div>
+                            <div class="text-3xl font-bold mb-2">{{ $members->count() }}</div>
                             <div class="text-sm">Members</div>
                         </div>
                         <div class="bg-gradient-to-br from-idol-blue to-idol-pink p-6 rounded-2xl text-white">
@@ -251,128 +242,343 @@
         </div>
     </section>
 
-    <!-- News Section -->
-    
-        <!-- Latest News Section -->
-        <section id="news" class="section-padding bg-white section">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <!-- Section Header -->
-                <div class="text-center mb-12 loading">
-                    <div class="inline-block">
-                        <div class="flex items-center justify-center mb-4">
-                            <div class="h-1 w-20 bg-gradient-to-r from-idol-pink to-idol-purple rounded-full"></div>
-                        </div>
-                        <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4" style="font-style: italic;">
-                            Live & News
-                        </h2>
-                        <div class="flex items-center justify-center">
-                            <div class="h-1 w-20 bg-gradient-to-r from-idol-pink to-idol-purple rounded-full"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Events Table -->
-                <div class="bg-gray-50 rounded-3xl p-6 md:p-8 shadow-xl loading">
-                    <!-- Table Header -->
-                    <div class="grid grid-cols-12 gap-4 mb-6">
-                        <div class="col-span-12 md:col-span-2">
-                            <div class="bg-white rounded-2xl border-2 border-gray-800 px-4 py-3 text-center">
-                                <span class="font-semibold text-gray-800 text-sm md:text-base" style="font-style: italic;">JADWAL</span>
-                            </div>
-                        </div>
-                        <div class="col-span-12 md:col-span-4">
-                            <div class="bg-white rounded-2xl border-2 border-gray-800 px-4 py-3 text-center">
-                                <span class="font-semibold text-gray-800 text-sm md:text-base" style="font-style: italic;">EVENT</span>
-                            </div>
-                        </div>
-                        <div class="col-span-12 md:col-span-4">
-                            <div class="bg-white rounded-2xl border-2 border-gray-800 px-4 py-3 text-center">
-                                <span class="font-semibold text-gray-800 text-sm md:text-base" style="font-style: italic;">LOKASI</span>
-                            </div>
-                        </div>
-                        <div class="col-span-12 md:col-span-2">
-                            <div class="bg-white rounded-2xl border-2 border-gray-800 px-4 py-3 text-center">
-                                <span class="font-semibold text-gray-800 text-sm md:text-base" style="font-style: italic;">DETAIL</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Table Rows -->
-                    <div class="space-y-4">
-                        @forelse($events as $index => $event)
-                        <div class="grid grid-cols-12 gap-4 items-center py-4 border-b-2 border-gray-800 news-row loading" 
-                            style="animation-delay: {{ $index * 0.1 }}s">
+    <!-- Member Detail Modal dengan Animasi Curtain -->
+    <div id="memberDetailModal" class="fixed inset-0 z-50 opacity-0 invisible transition-all duration-500">
+        <!-- Background Overlay -->
+        <div class="absolute inset-0 bg-black bg-opacity-80" onclick="closeMemberDetail()"></div>
+        
+        <!-- Curtain Animation Container -->
+        <div class="relative w-full h-full flex items-center justify-center">
+            <!-- Left Curtain -->
+            <div id="leftCurtain" class="absolute top-0 left-0 w-1/2 h-full bg-gradient-to-r from-idol-pink to-idol-purple transform transition-transform duration-700 ease-in-out translate-x-0"></div>
+            
+            <!-- Right Curtain -->
+            <div id="rightCurtain" class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-idol-purple to-idol-pink transform transition-transform duration-700 ease-in-out translate-x-0"></div>
+            
+            <!-- Modal Content -->
+            <div id="memberDetailContent" class="relative z-10 bg-white rounded-3xl shadow-2xl m-4 max-w-4xl w-full opacity-0 scale-95 transform transition-all duration-500">
+                <div class="flex flex-col md:flex-row overflow-hidden rounded-3xl">
+                    <!-- Member Photo Section -->
+                    <div class="md:w-1/2 relative">
+                        <div class="aspect-square md:aspect-auto md:h-full relative overflow-hidden">
+                            <img id="memberPhoto" src="" alt="" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
                             
-                            <!-- Date Column -->
-                            <div class="col-span-12 md:col-span-2">
-                                <div class="text-center md:text-left">
-                                    <span class="text-gray-800 font-medium text-sm md:text-base" style="font-style: italic;">
-                                        {{ $event->formatted_date }}
-                                    </span>
-                                </div>
-                            </div>
-
-                            <!-- Event Name Column -->
-                            <div class="col-span-12 md:col-span-4">
-                                <div class="text-center md:text-left">
-                                    <span class="text-gray-800 font-medium text-sm md:text-base" style="font-style: italic;">
-                                        {{ $event->event_name }}
-                                    </span>
-                                </div>
-                            </div>
-
-                            <!-- Location Column -->
-                            <div class="col-span-12 md:col-span-4">
-                                <div class="text-center md:text-left">
-                                    <span class="text-gray-800 font-medium text-sm md:text-base" style="font-style: italic;">
-                                        {{ $event->location }}
-                                    </span>
-                                </div>
-                            </div>
-
-                            <!-- Detail Button Column -->
-                            <div class="col-span-12 md:col-span-2">
-                                <div class="text-center">
-                                    @if($event->status === 'tba')
-                                        <button class="bg-gray-200 text-gray-600 rounded-2xl border-2 border-gray-400 px-4 py-2 text-sm font-semibold cursor-not-allowed" 
-                                                style="font-style: italic;" disabled>
-                                            TBA
-                                        </button>
-                                    @else
-                                        <button onclick="showEventDetail({{ $event->id }})" 
-                                                class="bg-white text-gray-800 rounded-2xl border-2 border-gray-800 px-4 py-2 text-sm font-semibold hover:bg-idol-pink hover:text-white hover:border-idol-pink transition-all duration-300 event-detail-btn" 
-                                                style="font-style: italic;"
-                                                data-event-id="{{ $event->id }}">
-                                            {{ $event->status_text }}
-                                        </button>
-                                    @endif
+                            <!-- Member Number Badge -->
+                            <div class="absolute top-6 left-6">
+                                <div id="memberNumberBadge" class="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+                                    <span class="text-white text-2xl font-bold">1</span>
                                 </div>
                             </div>
                         </div>
-                        @empty
-                        <div class="text-center py-12">
-                            <p class="text-gray-500 text-lg" style="font-style: italic;">Belum ada event yang tersedia</p>
+                    </div>
+                    
+                    <!-- Member Info Section -->
+                    <div class="md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
+                        <!-- Name and Color -->
+                        <div class="mb-8">
+                            <h2 id="memberName" class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">Member Name</h2>
+                            <div class="flex items-center mb-4">
+                                <span class="text-gray-600 mr-3">Member Color:</span>
+                                <div id="memberColorBox" class="w-8 h-8 rounded-full border-4 border-white shadow-lg"></div>
+                                <span id="memberColorText" class="ml-3 text-gray-700 font-semibold">#color</span>
+                            </div>
                         </div>
-                        @endforelse
+                        
+                        <!-- Birth Date -->
+                        <div class="mb-8">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2 flex items-center">
+                                <svg class="w-5 h-5 mr-2 text-idol-pink" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path>
+                                </svg>
+                                Birthday
+                            </h3>
+                            <p id="memberBirthDate" class="text-gray-600 text-lg">January 1, 2000</p>
+                        </div>
+                        
+                        <!-- Jiko (Self Introduction) -->
+                        <div class="mb-8">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                                <svg class="w-5 h-5 mr-2 text-idol-pink" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                                </svg>
+                                Self Introduction
+                            </h3>
+                            <div class="bg-gray-50 p-4 rounded-xl">
+                                <p id="memberJiko" class="text-gray-700 leading-relaxed italic">Member introduction text will appear here...</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Close Button -->
+                        <div class="text-center">
+                            <button onclick="closeMemberDetail()" 
+                                    class="bg-gradient-to-r from-idol-pink to-idol-purple text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center mx-auto">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                                Close
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
-
-    <!-- Event Detail Modal -->
-    <div id="eventDetailModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 opacity-0 invisible transition-all duration-300">
-        <div class="bg-white rounded-3xl p-8 m-4 max-w-2xl w-full transform scale-95 transition-all duration-300 max-h-96 overflow-y-auto">
-            <div id="eventDetailContent">
-                <!-- Content akan diisi oleh JavaScript -->
-            </div>
-            <div class="text-center mt-6">
-                <button onclick="closeEventDetail()" 
-                        class="bg-idol-gradient text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity">
-                    Tutup
-                </button>
             </div>
         </div>
     </div>
+
+    <!-- Schedule Section (Previously News/Live) -->
+    <section id="schedule" class="section-padding bg-white section">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Section Header -->
+            <div class="text-center mb-12 loading">
+                <div class="inline-block">
+                    <div class="flex items-center justify-center mb-4">
+                        <div class="h-1 w-20 bg-gradient-to-r from-idol-pink to-idol-purple rounded-full"></div>
+                    </div>
+                    <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4" style="font-style: italic;">
+                        Schedule
+                    </h2>
+                    <div class="flex items-center justify-center">
+                        <div class="h-1 w-20 bg-gradient-to-r from-idol-pink to-idol-purple rounded-full"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Events Table -->
+            <div class="bg-gray-50 rounded-3xl p-6 md:p-8 shadow-xl loading">
+                <!-- Table Header -->
+                <div class="grid grid-cols-12 gap-4 mb-6">
+                    <div class="col-span-12 md:col-span-1">
+                        <div class="bg-white rounded-2xl border-2 border-gray-800 px-4 py-3 text-center">
+                            <span class="font-semibold text-gray-800 text-sm md:text-base" style="font-style: italic;">NO</span>
+                        </div>
+                    </div>
+                    <div class="col-span-12 md:col-span-2">
+                        <div class="bg-white rounded-2xl border-2 border-gray-800 px-4 py-3 text-center">
+                            <span class="font-semibold text-gray-800 text-sm md:text-base" style="font-style: italic;">JADWAL</span>
+                        </div>
+                    </div>
+                    <div class="col-span-12 md:col-span-4">
+                        <div class="bg-white rounded-2xl border-2 border-gray-800 px-4 py-3 text-center">
+                            <span class="font-semibold text-gray-800 text-sm md:text-base" style="font-style: italic;">EVENT</span>
+                        </div>
+                    </div>
+                    <div class="col-span-12 md:col-span-3">
+                        <div class="bg-white rounded-2xl border-2 border-gray-800 px-4 py-3 text-center">
+                            <span class="font-semibold text-gray-800 text-sm md:text-base" style="font-style: italic;">LOKASI</span>
+                        </div>
+                    </div>
+                    <div class="col-span-12 md:col-span-2">
+                        <div class="bg-white rounded-2xl border-2 border-gray-800 px-4 py-3 text-center">
+                            <span class="font-semibold text-gray-800 text-sm md:text-base" style="font-style: italic;">DETAIL</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Table Rows - Sample Data -->
+                <div class="space-y-4">
+                    <!-- Row 1 - Instagram Link Available -->
+                    <div class="grid grid-cols-12 gap-4 items-center py-4 border-b-2 border-gray-800 news-row loading schedule-row" 
+                        style="animation-delay: 0.1s">
+                        
+                        <!-- Row Number -->
+                        <div class="col-span-12 md:col-span-1">
+                            <div class="text-center">
+                                <span class="text-gray-800 font-bold text-lg" style="font-style: italic;">1</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Date Column -->
+                        <div class="col-span-12 md:col-span-2">
+                            <div class="text-center md:text-left">
+                                <span class="text-gray-800 font-medium text-sm md:text-base" style="font-style: italic;">
+                                    15 Jul 2025
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Event Name Column -->
+                        <div class="col-span-12 md:col-span-4">
+                            <div class="text-center md:text-left">
+                                <span class="text-gray-800 font-medium text-sm md:text-base" style="font-style: italic;">
+                                    Fan Meeting Osaka
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Location Column -->
+                        <div class="col-span-12 md:col-span-3">
+                            <div class="text-center md:text-left">
+                                <span class="text-gray-800 font-medium text-sm md:text-base" style="font-style: italic;">
+                                    Osaka Hall
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Detail Button Column -->
+                        <div class="col-span-12 md:col-span-2">
+                            <div class="text-center">
+                                <a href="https://instagram.com/p/fan-meeting-osaka" target="_blank" 
+                                   class="bg-white text-gray-800 rounded-2xl border-2 border-gray-800 px-4 py-2 text-sm font-semibold hover:bg-idol-pink hover:text-white hover:border-idol-pink transition-all duration-300 schedule-detail-btn" 
+                                   style="font-style: italic;">
+                                    <i class="fab fa-instagram mr-1"></i>IG
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Row 3 - Live Stream -->
+                    <div class="grid grid-cols-12 gap-4 items-center py-4 border-b-2 border-gray-800 news-row loading schedule-row" 
+                        style="animation-delay: 0.3s">
+                        
+                        <!-- Row Number -->
+                        <div class="col-span-12 md:col-span-1">
+                            <div class="text-center">
+                                <span class="text-gray-800 font-bold text-lg" style="font-style: italic;">3</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Date Column -->
+                        <div class="col-span-12 md:col-span-2">
+                            <div class="text-center md:text-left">
+                                <span class="text-gray-800 font-medium text-sm md:text-base" style="font-style: italic;">
+                                    25 Jul 2025
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Event Name Column -->
+                        <div class="col-span-12 md:col-span-4">
+                            <div class="text-center md:text-left">
+                                <span class="text-gray-800 font-medium text-sm md:text-base" style="font-style: italic;">
+                                    Live Streaming Special
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Location Column -->
+                        <div class="col-span-12 md:col-span-3">
+                            <div class="text-center md:text-left">
+                                <span class="text-gray-800 font-medium text-sm md:text-base" style="font-style: italic;">
+                                    Online Platform
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Detail Button Column -->
+                        <div class="col-span-12 md:col-span-2">
+                            <div class="text-center">
+                                <a href="https://youtube.com/live/special-stream" target="_blank" 
+                                   class="bg-red-500 text-white rounded-2xl border-2 border-red-500 px-4 py-2 text-sm font-semibold hover:bg-red-600 hover:border-red-600 transition-all duration-300 schedule-detail-btn live-btn" 
+                                   style="font-style: italic;">
+                                    <i class="fas fa-play mr-1"></i>LIVE
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Row 4 - TBA Status -->
+                    <div class="grid grid-cols-12 gap-4 items-center py-4 border-b-2 border-gray-800 news-row loading schedule-row" 
+                        style="animation-delay: 0.4s">
+                        
+                        <!-- Row Number -->
+                        <div class="col-span-12 md:col-span-1">
+                            <div class="text-center">
+                                <span class="text-gray-800 font-bold text-lg" style="font-style: italic;">4</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Date Column -->
+                        <div class="col-span-12 md:col-span-2">
+                            <div class="text-center md:text-left">
+                                <span class="text-gray-800 font-medium text-sm md:text-base" style="font-style: italic;">
+                                    02 Aug 2025
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Event Name Column -->
+                        <div class="col-span-12 md:col-span-4">
+                            <div class="text-center md:text-left">
+                                <span class="text-gray-800 font-medium text-sm md:text-base" style="font-style: italic;">
+                                    Music Festival Collaboration
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Location Column -->
+                        <div class="col-span-12 md:col-span-3">
+                            <div class="text-center md:text-left">
+                                <span class="text-gray-800 font-medium text-sm md:text-base" style="font-style: italic;">
+                                    Shibuya Sky
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Detail Button Column -->
+                        <div class="col-span-12 md:col-span-2">
+                            <div class="text-center">
+                                <button class="bg-gray-200 text-gray-600 rounded-2xl border-2 border-gray-400 px-4 py-2 text-sm font-semibold cursor-not-allowed" 
+                                        style="font-style: italic;" disabled>
+                                    TBA
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Row 5 - Another Instagram Link -->
+                    <div class="grid grid-cols-12 gap-4 items-center py-4 border-b-2 border-gray-800 news-row loading schedule-row" 
+                        style="animation-delay: 0.5s">
+                        
+                        <!-- Row Number -->
+                        <div class="col-span-12 md:col-span-1">
+                            <div class="text-center">
+                                <span class="text-gray-800 font-bold text-lg" style="font-style: italic;">5</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Date Column -->
+                        <div class="col-span-12 md:col-span-2">
+                            <div class="text-center md:text-left">
+                                <span class="text-gray-800 font-medium text-sm md:text-base" style="font-style: italic;">
+                                    10 Aug 2025
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Event Name Column -->
+                        <div class="col-span-12 md:col-span-4">
+                            <div class="text-center md:text-left">
+                                <span class="text-gray-800 font-medium text-sm md:text-base" style="font-style: italic;">
+                                    Recording Session Behind Scenes
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Location Column -->
+                        <div class="col-span-12 md:col-span-3">
+                            <div class="text-center md:text-left">
+                                <span class="text-gray-800 font-medium text-sm md:text-base" style="font-style: italic;">
+                                    Studio A
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Detail Button Column -->
+                        <div class="col-span-12 md:col-span-2">
+                            <div class="text-center">
+                                <a href="https://instagram.com/p/recording-session" target="_blank" 
+                                   class="bg-white text-gray-800 rounded-2xl border-2 border-gray-800 px-4 py-2 text-sm font-semibold hover:bg-idol-pink hover:text-white hover:border-idol-pink transition-all duration-300 schedule-detail-btn" 
+                                   style="font-style: italic;">
+                                    <i class="fab fa-instagram mr-1"></i>IG
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
 
     <!-- Simplified Gallery Section -->
     <section id="gallery" class="section-padding bg-gray-50 section">
@@ -525,7 +731,6 @@
                         
                     </div>
                 </div>
-
             </div>
         </div>
     </section>
@@ -561,7 +766,6 @@
             </div>
         </div>
     </div>
-
 
     <!-- Enhanced Music Section -->
     <section id="music" class="section-padding bg-white section music-section">
@@ -646,25 +850,11 @@
                     </div>
                 </div>
             </div>
-
-
-    </section>
-
-    <!-- Schedule Section Placeholder -->
-    <section id="schedule" class="section-padding bg-gray-50 section">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center loading">
-                <h2 class="text-4xl font-bold text-gray-800 mb-4 title-underline">Schedule</h2>
-                <p class="text-gray-600 mb-12">Upcoming events and performances</p>
-                <div class="bg-white rounded-lg p-12 shadow-lg">
-                    <p class="text-gray-500 text-lg">Schedule section coming soon...</p>
-                </div>
-            </div>
         </div>
     </section>
 
-
-
+    <!-- Include Activities Section -->
+    @include('sections.activities')
 
     <!-- Include Footer -->
     @include('footer')

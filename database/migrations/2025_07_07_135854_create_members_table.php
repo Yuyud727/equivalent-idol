@@ -1,30 +1,41 @@
 <?php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateDetailMemberTable extends Migration
 {
-    public function up(): void
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
     {
-        Schema::create('members', function (Blueprint $table) {
+        Schema::create('detail_member', function (Blueprint $table) {
             $table->id();
+            $table->integer('member_no')->unique();
             $table->string('name');
-            $table->string('stage_name')->nullable();
-            $table->string('position'); // Leader, Main Vocal, etc
+            $table->string('photo');
+            $table->string('color', 7); // Hex color code
             $table->date('birth_date');
-            $table->string('nationality')->default('Indonesia');
-            $table->text('bio')->nullable();
-            $table->string('profile_image')->nullable();
-            $table->string('color_theme')->nullable(); // untuk member color
-            $table->integer('order')->default(0); // urutan member
-            $table->boolean('is_active')->default(true);
+            $table->text('jiko');
             $table->timestamps();
+            
+            // Indexes
+            $table->index('member_no');
+            $table->index('name');
         });
     }
 
-    public function down(): void
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
     {
-        Schema::dropIfExists('members');
+        Schema::dropIfExists('detail_member');
     }
-};
+}
