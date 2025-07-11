@@ -3,19 +3,29 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+<<<<<<< HEAD
 use Carbon\Carbon;
+=======
+>>>>>>> f36e3795efb760ef00dc613c5e664113bc1128e3
 
 class Schedule extends Model
 {
     protected $table = 'schedule';
 
+<<<<<<< HEAD
     protected $primaryKey = 'id';
+=======
+    public $timestamps = false; // Disable timestamps
+
+    protected $primaryKey = 'row_number';
+>>>>>>> f36e3795efb760ef00dc613c5e664113bc1128e3
 
     protected $fillable = [
         'row_number',
         'event_date',
         'event_name',
         'event_description',
+<<<<<<< HEAD
         'location',
         'instagram_url',
         'youtube_url',
@@ -189,3 +199,7 @@ class Schedule extends Model
         return 'fas fa-info-circle';
     }
 }
+=======
+    ];
+}
+>>>>>>> f36e3795efb760ef00dc613c5e664113bc1128e3

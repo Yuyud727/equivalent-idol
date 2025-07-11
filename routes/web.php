@@ -29,6 +29,7 @@ Route::prefix('members')->name('members.')->group(function () {
 Route::get('/news', [NewsController::class, 'index'])->name('news.index');
 Route::get('/news/{news:slug}', [NewsController::class, 'show'])->name('news.show');
 
+<<<<<<< HEAD
 // Tambahkan routes ini ke routes/web.php di bagian API Routes
 
 Route::prefix('api')->group(function () {
@@ -75,6 +76,12 @@ Route::prefix('api')->group(function () {
     })->name('api.events.show');
     
     // ... rest of existing API routes ...
+=======
+// Events/Schedule routes (updated)
+Route::prefix('schedule')->name('schedule.')->group(function () {
+    Route::get('/', [ScheduleController::class, 'index'])->name('index');
+    Route::get('/{id}', [ScheduleController::class, 'show'])->name('show');
+>>>>>>> f36e3795efb760ef00dc613c5e664113bc1128e3
 });
 
 // Legacy Events route (redirect ke schedule)

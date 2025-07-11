@@ -12,7 +12,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\QueryException;
 use Illuminate\schema\Blueprint;
+<<<<<<< HEAD
 use Illuminate\Support\Facades\Schema;
+=======
+>>>>>>> f36e3795efb760ef00dc613c5e664113bc1128e3
 
 class HomeController extends Controller
 {
@@ -29,6 +32,7 @@ class HomeController extends Controller
                 // Events - menggunakan Schedule table yang baru
                 'events' => $this->getEvents(),
                 
+<<<<<<< HEAD
                 // Schedule Events - untuk section schedule di home page
                 'scheduleEvents' => $this->getScheduleEvents(),
                 
@@ -38,6 +42,8 @@ class HomeController extends Controller
                 // Live Events - untuk notifikasi live
                 'liveEvents' => $this->getLiveEvents(),
                 
+=======
+>>>>>>> f36e3795efb760ef00dc613c5e664113bc1128e3
                 // Activities - menggunakan OtsukarePosts yang baru
                 'activities' => $this->getActivities(),
                 
@@ -61,7 +67,10 @@ class HomeController extends Controller
             Log::info('HomeController data loaded successfully', [
                 'members_count' => $data['members']->count(),
                 'events_count' => $data['events']->count(),
+<<<<<<< HEAD
                 'schedule_events_count' => $data['scheduleEvents']->count(),
+=======
+>>>>>>> f36e3795efb760ef00dc613c5e664113bc1128e3
                 'activities_count' => $data['activities']->count()
             ]);
 
@@ -79,10 +88,14 @@ class HomeController extends Controller
             $data = [
                 'members' => collect(),
                 'latestNews' => collect(),
+<<<<<<< HEAD
                 'events' => collect(),
                 'scheduleEvents' => collect(),
                 'featuredEvents' => collect(),
                 'liveEvents' => collect(),
+=======
+                'events' => collect(), 
+>>>>>>> f36e3795efb760ef00dc613c5e664113bc1128e3
                 'activities' => collect(),
                 'galleries' => collect(),
                 'featuredGallery' => collect(),
@@ -114,7 +127,11 @@ class HomeController extends Controller
     }
 
     /**
+<<<<<<< HEAD
      * Get events with error handling (legacy)
+=======
+     * Get events with error handling
+>>>>>>> f36e3795efb760ef00dc613c5e664113bc1128e3
      */
     private function getEvents()
     {
@@ -135,6 +152,7 @@ class HomeController extends Controller
     }
 
     /**
+<<<<<<< HEAD
      * Get schedule events for schedule section (NEW)
      */
     private function getScheduleEvents()
@@ -194,6 +212,8 @@ class HomeController extends Controller
     }
 
     /**
+=======
+>>>>>>> f36e3795efb760ef00dc613c5e664113bc1128e3
      * Get upcoming events
      */
     private function getUpcomingEvents()
@@ -389,6 +409,7 @@ class HomeController extends Controller
                 $stats['recent_activities'] = 0;
             }
             
+<<<<<<< HEAD
             // Count live events (NEW)
             try {
                 $stats['live_events'] = \Schema::hasTable('schedule') ?
@@ -397,6 +418,8 @@ class HomeController extends Controller
                 $stats['live_events'] = 0;
             }
             
+=======
+>>>>>>> f36e3795efb760ef00dc613c5e664113bc1128e3
             return $stats;
             
         } catch (\Exception $e) {
@@ -417,7 +440,10 @@ class HomeController extends Controller
             'total_gallery' => 0,
             'upcoming_events' => 0,
             'recent_activities' => 0,
+<<<<<<< HEAD
             'live_events' => 0,
+=======
+>>>>>>> f36e3795efb760ef00dc613c5e664113bc1128e3
         ];
     }
 
@@ -443,6 +469,7 @@ class HomeController extends Controller
             ], 500);
         }
     }
+<<<<<<< HEAD
 
     /**
      * API method for getting schedule data via AJAX (NEW)
@@ -578,4 +605,6 @@ class HomeController extends Controller
             ], 500);
         }
     }
+=======
+>>>>>>> f36e3795efb760ef00dc613c5e664113bc1128e3
 }

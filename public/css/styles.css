@@ -1634,6 +1634,7 @@ html {
     .member-name {
         font-size: 1.2rem !important;
     }
+<<<<<<< HEAD
 }
 
 /* ===============================================
@@ -2179,4 +2180,6 @@ html {
     opacity: 1;
     transform: translateY(0);
     transition: all 0.6s ease;
+=======
+>>>>>>> f36e3795efb760ef00dc613c5e664113bc1128e3
 }

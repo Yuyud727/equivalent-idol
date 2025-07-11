@@ -23,8 +23,11 @@ class DatabaseSeeder extends Seeder
             EventSeeder::class,
             MemberSeeder::class,
             SocialMediaSeeder::class,
+<<<<<<< HEAD
             ScheduleSeeder::class,
 
+=======
+>>>>>>> f36e3795efb760ef00dc613c5e664113bc1128e3
             // Tambahkan seeder lainnya di sini jika ada
             // NewsSeeder::class,
             GallerySeeder::class,

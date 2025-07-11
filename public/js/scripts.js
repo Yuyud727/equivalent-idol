@@ -1971,6 +1971,7 @@ window.filterActivities = filterActivities;
 window.openActivityDetail = openActivityDetail;
 window.closeActivityDetail = closeActivityDetail;
 window.loadMoreActivities = loadMoreActivities;
+<<<<<<< HEAD
 window.openImageViewer = openImageViewer;
 
 /* ===============================================
@@ -2567,3 +2568,6 @@ function updateAnimations() {
 
 // Throttle scroll events
 window.addEventListener('scroll', requestTick);
+=======
+window.openImageViewer = openImageViewer;
+>>>>>>> f36e3795efb760ef00dc613c5e664113bc1128e3

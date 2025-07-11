@@ -852,6 +852,7 @@
             </div>
         </div>
     </section>
+<<<<<<< HEAD
     
     <!-- NEXT EVENT Section -->
     <section id="next-event" class="section-padding bg-gradient-to-br from-gray-50 to-blue-50 section">
@@ -1186,6 +1187,8 @@
             </div>
         </div>
     </div>
+=======
+>>>>>>> f36e3795efb760ef00dc613c5e664113bc1128e3
 
     <!-- Include Activities Section -->
     @include('sections.activities')
